@@ -72,6 +72,8 @@ func step(frame: PlayerInputFrame, delta: float) -> void:
 	_handle_weapons(frame)
 	if frame.interact:
 		interactor.request_interact()
+	if frame.quick_use > 0:
+		inventory.request_use_quick(frame.quick_use)
 
 
 func _handle_weapons(frame: PlayerInputFrame) -> void:

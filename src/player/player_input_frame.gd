@@ -28,3 +28,5 @@ var reload: bool = false
 var weapon_slot: int = -1
 ## Interactuar (F) en este tick.
 var interact: bool = false
+## Tecla de uso rápido pulsada en este tick (4-9, 10 = tecla 0) o 0.
+var quick_use: int = 0

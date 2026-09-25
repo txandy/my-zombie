@@ -24,6 +24,8 @@ signal external_opened(container: ItemContainer, title: String)
 @export var external_max_distance_m: float = 3.5
 
 var inventory: Inventory
+## Uso rápido: tecla (4-0) -> uuid del objeto (GDD §7.2).
+var quick_bindings: Dictionary[int, StringName] = {}
 ## Nodo del mundo de cada contenedor externo abierto (para cerrarlo al alejarse).
 var _external_sources: Dictionary[StringName, Node3D] = {}
 
@@ -93,6 +95,28 @@ func request_use(item_uuid: StringName) -> void:
 	_server_use.rpc_id(1, item_uuid)
 
 
+## Transferencia rápida: de un contenedor externo al inventario, o del inventario al
+## contenedor externo abierto (si hay uno).
+func request_quick_move(item_uuid: StringName) -> void:
+	_server_quick_move.rpc_id(1, item_uuid)
+
+
+## Asigna un objeto a una tecla de uso rápido (4-0). Uuid vacío = quitar.
+func request_bind_quick(key: int, item_uuid: StringName) -> void:
+	_server_bind_quick.rpc_id(1, key, item_uuid)
+
+
+## Cierra los contenedores externos abiertos (al cerrar la pantalla de inventario).
+func request_close_externals() -> void:
+	_server_close_externals.rpc_id(1)
+
+
+func request_use_quick(key: int) -> void:
+	var uuid: StringName = quick_bindings.get(key, &"")
+	if uuid != &"":
+		request_use(uuid)
+
+
 @rpc("any_peer", "call_local", "reliable")
 func _server_move(item_uuid: StringName, target_id: StringName, grid: int, cell: Vector2i, rotated: bool) -> void:
 	var item: ItemInstance = _validated_item(item_uuid)
@@ -154,6 +178,64 @@ func _server_use(item_uuid: StringName) -> void:
 		if item.quantity <= 0:
 			inventory.detach(item)
 		inventory_changed.emit()
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _server_quick_move(item_uuid: StringName) -> void:
+	var item: ItemInstance = _validated_item(item_uuid)
+	if item == null:
+		return
+	var origin: ItemContainer = item.location()
+	var from_external: bool = origin != null and _is_in_external(origin)
+	if from_external:
+		var spot: Dictionary = origin.locate(item)
+		origin.remove(item)
+		if inventory.store(item) > 0:
+			origin.place(item, spot.grid as int, spot.cell as Vector2i, spot.rotated as bool)
+			_reject("no cabe en el inventario")
+		return
+	for target: ItemContainer in inventory.external.values():
+		if target.can_hold(item) and _has_free_spot(target, item) and inventory.detach(item):
+			target.insert_anywhere(item)
+			inventory_changed.emit()
+			return
+	_reject("no hay sitio")
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _server_close_externals() -> void:
+	if not _is_valid_sender():
+		return
+	for id: StringName in inventory.external.keys():
+		close_external(id)
+
+
+@rpc("any_peer", "call_local", "reliable")
+func _server_bind_quick(key: int, item_uuid: StringName) -> void:
+	if not _is_valid_sender() or key < 4 or key > 10:
+		return
+	if item_uuid == &"":
+		quick_bindings.erase(key)
+	elif inventory.find(item_uuid) != null:
+		quick_bindings[key] = item_uuid
+	inventory_changed.emit()
+
+
+static func _has_free_spot(container: ItemContainer, item: ItemInstance) -> bool:
+	for grid: ItemGrid in container.grids:
+		if not grid.find_free_spot(item).is_empty():
+			return true
+	return false
+
+
+# True si el contenedor es externo o está dentro de uno externo.
+func _is_in_external(container: ItemContainer) -> bool:
+	while container != null:
+		if inventory.external.has(container.id):
+			return true
+		var holder: ItemInstance = container.owner_item()
+		container = holder.location() if holder != null else null
+	return false
 
 
 ## Host: añade un objeto nuevo al almacenamiento (loot recogido, reparto inicial).

@@ -5,6 +5,7 @@ extends Control
 @export var health: HealthComponent
 @export var weapons: WeaponHolder
 @export var receiver: DamageReceiver
+@export var interactor: Interactor
 ## Segundos que se muestra la salud tras recibir daño (GDD §14: visible al recibir daño).
 @export var health_visible_s: float = 6.0
 
@@ -17,6 +18,7 @@ var _reload_timer: float = 0.0
 @onready var _weapon_label: Label = $WeaponLabel
 @onready var _health_label: Label = $HealthLabel
 @onready var _status_label: Label = $StatusLabel
+@onready var _prompt_label: Label = $PromptLabel
 
 
 func _ready() -> void:
@@ -38,9 +40,13 @@ func _process(delta: float) -> void:
 	_hitmarker.visible = _hitmarker_timer > 0.0
 	_crosshair.visible = not Input.is_action_pressed(&"aim")
 	_weapon_label.text = _weapon_text()
-	_health_label.visible = _health_timer > 0.0 or health.is_dead or Input.is_key_pressed(KEY_TAB)
+	_health_label.visible = _health_timer > 0.0 or health.is_dead
 	_health_label.text = _health_text()
 	_status_label.text = _status_text()
+	if is_instance_valid(interactor.focused):
+		_prompt_label.text = "[F] %s" % String(interactor.focused.call(&"interaction_text"))
+	else:
+		_prompt_label.text = ""
 
 
 func _weapon_text() -> String:
@@ -50,8 +56,10 @@ func _weapon_text() -> String:
 	if weapon.kind == WeaponDefinition.Kind.MELEE:
 		return weapon.display_name
 	var state: String = "  RECARGANDO %.1fs" % _reload_timer if _reload_timer > 0.0 else ""
-	return "%s  %d/%d  %s%s" % [weapon.display_name, weapons.current_rounds(), weapon.magazine_size,
-			weapon.default_ammo.display_name, state]
+	var reserve: int = weapons.reserve_ammo()
+	var reserve_text: String = " (+%d)" % reserve if reserve >= 0 else ""
+	return "%s  %d/%d%s  %s%s" % [weapon.display_name, weapons.current_rounds(), weapon.magazine_size,
+			reserve_text, weapons.loaded_ammo().display_name, state]
 
 
 func _health_text() -> String:

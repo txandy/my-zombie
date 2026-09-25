@@ -57,5 +57,8 @@ func poll() -> PlayerInputFrame:
 	if Input.is_action_just_pressed(&"weapon_melee"):
 		frame.weapon_slot = 3
 	frame.interact = Input.is_action_just_pressed(&"interact")
+	for key: int in range(4, 11):
+		if Input.is_action_just_pressed(StringName("quick_%d" % (key % 10))):
+			frame.quick_use = key
 	_look_accum = Vector2.ZERO
 	return frame
