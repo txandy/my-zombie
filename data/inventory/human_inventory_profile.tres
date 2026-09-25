@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="InventoryProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/inventory_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+pockets = Array[Vector2i]([Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1), Vector2i(1, 1)])
+weight_penalty_start_kg = 25.0
+weight_max_kg = 55.0
+overweight_speed_multiplier = 0.55
