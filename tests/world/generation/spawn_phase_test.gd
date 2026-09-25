@@ -39,3 +39,12 @@ func test_spawns_are_deterministic() -> void:
 	var a: WorldData = WorldGenerator.generate(99, _settings)
 	var b: WorldData = WorldGenerator.generate(99, _settings)
 	assert_array(Array(a.spawns.to_bytes())).is_equal(Array(b.spawns.to_bytes()))
+
+
+func test_zombie_points_on_land_away_from_spawn_and_pois() -> void:
+	var data: WorldData = WorldGenerator.generate(5, _settings)
+	assert_int(data.spawns.zombie_points.size()).is_equal(_settings.zombie_spawn_points)
+	for point: Vector3 in data.spawns.zombie_points:
+		assert_float(point.y).is_greater_equal(1.0)
+		assert_float(point.distance_to(data.spawns.player_spawn)).is_greater_equal(_settings.zombie_min_distance_to_spawn_m)
+		assert_bool(SpawnPhase._inside_poi(data, _settings, point)).is_false()

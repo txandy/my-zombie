@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="ZombieProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/ai/zombie/zombie_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+type_id = &"basic"
+wander_speed = 0.7
+chase_speed_day = 1.6
+chase_speed_night = 4.4
+turn_speed_deg = 220.0
+sight_range_m = 30.0
+sight_fov_deg = 120.0
+smell_radius_m = 10.0
+hearing_multiplier = 1.2
+give_up_s = 8.0
+perception_interval_s = 0.5
+attack_range_m = 1.4
+attack_interval_s = 1.3
+attack_damage = 16.0
+infection_chance = 0.25
+structure_damage = 12.0

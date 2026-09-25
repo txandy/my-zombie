@@ -14,6 +14,8 @@ class Camp:
 
 var player_spawn: Vector3
 var camps: Array[Camp] = []
+## Puntos donde pueden aparecer zombis (en tierra, fuera de POIs y lejos de la aparición).
+var zombie_points := PackedVector3Array()
 
 
 func to_bytes() -> PackedByteArray:
@@ -23,6 +25,7 @@ func to_bytes() -> PackedByteArray:
 	bytes.encode_double(8, player_spawn.y)
 	bytes.encode_double(16, player_spawn.z)
 	bytes.encode_s64(24, camps.size())
+	var zombie_bytes: PackedByteArray = zombie_points.to_byte_array()
 	for camp: Camp in camps:
 		var chunk := PackedByteArray()
 		chunk.resize(48)
@@ -33,4 +36,5 @@ func to_bytes() -> PackedByteArray:
 		chunk.encode_s64(32, camp.members)
 		chunk.encode_s64(40, camp.poi_index)
 		bytes.append_array(chunk)
+	bytes.append_array(zombie_bytes)
 	return bytes

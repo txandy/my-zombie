@@ -2,7 +2,7 @@ class_name SpawnPhase
 extends WorldGenPhase
 ## Fase 9: spawns (GDD §4.2). Zona de aparición del jugador (delante de un POI de tier 1,
 ## en el bioma más seguro) y campamentos de NPCs junto a POIs alejados del jugador.
-## 🔶 Los spawns de zombis llegan con M5.
+## Puntos de spawn de zombis: en tierra, fuera de las huellas de los POIs y lejos del jugador.
 
 
 func phase_name() -> StringName:
@@ -14,6 +14,7 @@ func run(data: WorldData, settings: WorldGenSettings, rng: RandomNumberGenerator
 	var spawn_poi: int = _player_poi(data, settings)
 	data.spawns.player_spawn = _player_spawn(data, settings, spawn_poi)
 	_place_camps(data, settings, rng, spawn_poi)
+	_place_zombie_points(data, settings, rng)
 
 
 # Primer POI de tier 1 en el bioma de menor dificultad (o -1).
@@ -91,3 +92,25 @@ static func _height(data: WorldData, point: Vector3) -> float:
 	var x: int = clampi(roundi(point.x / data.cell_size_m), 0, data.resolution - 1)
 	var z: int = clampi(roundi(point.z / data.cell_size_m), 0, data.resolution - 1)
 	return data.height_at(x, z)
+
+
+func _place_zombie_points(data: WorldData, settings: WorldGenSettings, rng: RandomNumberGenerator) -> void:
+	var size: float = (data.resolution - 1) * data.cell_size_m
+	var attempts: int = settings.zombie_spawn_points * 10
+	while data.spawns.zombie_points.size() < settings.zombie_spawn_points and attempts > 0:
+		attempts -= 1
+		var point := Vector3(rng.randf_range(0.0, size), 0.0, rng.randf_range(0.0, size))
+		point.y = _height(data, point)
+		if point.y < 1.0 or point.distance_to(data.spawns.player_spawn) < settings.zombie_min_distance_to_spawn_m:
+			continue
+		if _inside_poi(data, settings, point):
+			continue
+		data.spawns.zombie_points.append(point)
+
+
+static func _inside_poi(data: WorldData, settings: WorldGenSettings, point: Vector3) -> bool:
+	for poi: PoiPlacement in data.pois:
+		var half: Vector2 = poi.rotated_footprint(settings.poi_definitions[poi.definition_index]) * 0.5 + Vector2.ONE * 2.0
+		if absf(point.x - poi.position.x) <= half.x and absf(point.z - poi.position.z) <= half.y:
+			return true
+	return false

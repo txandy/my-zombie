@@ -21,6 +21,9 @@ var _fractured: Array[bool] = []
 var _pain_left_s: float = 0.0
 ## Tiempo restante de analgésico: mientras dure, el dolor no tiene efecto.
 var _painkiller_left_s: float = 0.0
+## Infección por mordedura (GDD §5.1): progreso 0-1 hasta desarrollarse.
+var infected: bool = false
+var infection_progress: float = 0.0
 
 
 func _ready() -> void:
@@ -43,6 +46,8 @@ func reset() -> void:
 		_fractured.append(false)
 	_pain_left_s = 0.0
 	_painkiller_left_s = 0.0
+	infected = false
+	infection_progress = 0.0
 	is_dead = false
 	status_changed.emit()
 
@@ -83,6 +88,9 @@ func tick(delta: float) -> void:
 		return
 	_pain_left_s = maxf(_pain_left_s - delta, 0.0)
 	_painkiller_left_s = maxf(_painkiller_left_s - delta, 0.0)
+	_tick_infection(delta)
+	if is_dead:
+		return
 	for zone: BodyZones.Zone in BodyZones.ALL:
 		match _bleeding[zone]:
 			Bleed.LIGHT:
@@ -228,3 +236,31 @@ func has_fracture() -> bool:
 
 func is_pain_suppressed() -> bool:
 	return _painkiller_left_s > 0.0
+
+
+# --- Infección ---
+
+func infect() -> void:
+	if not multiplayer.is_server() or is_dead or infected:
+		return
+	infected = true
+	infection_progress = 0.0
+	status_changed.emit()
+
+
+func cure_infection() -> bool:
+	if not infected:
+		return false
+	infected = false
+	infection_progress = 0.0
+	status_changed.emit()
+	return true
+
+
+func _tick_infection(delta: float) -> void:
+	if not infected or profile.infection_incubation_hours <= 0.0:
+		return
+	var hours: float = delta * GameState.game_hours_per_second
+	infection_progress = minf(infection_progress + hours / profile.infection_incubation_hours, 1.0)
+	if infection_progress >= 1.0:
+		_damage_zone(BodyZones.Zone.THORAX, profile.infection_damage_per_hour * hours)

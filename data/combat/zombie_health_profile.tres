@@ -1,0 +1,21 @@
+[gd_resource type="Resource" script_class="HealthProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/health/health_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+head_hp = 30.0
+thorax_hp = 220.0
+stomach_hp = 160.0
+arm_hp = 80.0
+leg_hp = 110.0
+redistribution_factor = 1.0
+light_bleed_chance_per_damage = 0.0
+heavy_bleed_chance_per_damage = 0.0
+light_bleed_dps = 0.0
+heavy_bleed_dps = 0.0
+fracture_chance_per_damage = 0.0
+pain_duration_s = 0.0
+arm_injury_spread_multiplier = 1.0
+arm_injury_reload_multiplier = 1.0
+leg_injury_speed_multiplier = 0.45

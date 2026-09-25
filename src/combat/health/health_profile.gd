@@ -28,6 +28,12 @@ extends Resource
 ## Segundos de dolor (temblor de la mira) tras una fractura o una zona destruida.
 @export var pain_duration_s: float = 0.0
 
+@export_group("Infección")
+## Horas de juego desde la mordedura hasta que la infección empieza a dañar.
+@export var infection_incubation_hours: float = 0.0
+## Daño por hora de juego al tórax con la infección desarrollada.
+@export var infection_damage_per_hour: float = 0.0
+
 @export_group("Penalizaciones")
 ## Multiplicador de la dispersión con un brazo destruido o fracturado.
 @export var arm_injury_spread_multiplier: float = 1.0

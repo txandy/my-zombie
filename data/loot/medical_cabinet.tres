@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://data/items/tourniquet.tres" id="11"]
 [ext_resource type="Resource" path="res://data/items/splint.tres" id="12"]
 [ext_resource type="Resource" path="res://data/items/painkillers.tres" id="13"]
+[ext_resource type="Resource" path="res://data/items/antibiotics.tres" id="14"]
 
 [sub_resource type="Resource" id="E0"]
 script = ExtResource("2")
@@ -39,10 +40,18 @@ min_quantity = 1
 max_quantity = 2
 min_tier = 1
 
+[sub_resource type="Resource" id="EX"]
+script = ExtResource("2")
+item = ExtResource("14")
+weight = 1.5
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
 [resource]
 script = ExtResource("1")
 id = &"medical_cabinet"
-entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3")])
+entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3"), SubResource("EX")])
 min_rolls = 1
 max_rolls = 2
 extra_rolls_per_tier = 0

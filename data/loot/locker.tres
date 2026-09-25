@@ -12,6 +12,7 @@
 [ext_resource type="Resource" path="res://data/items/backpack_small.tres" id="17"]
 [ext_resource type="Resource" path="res://data/items/rig_basic.tres" id="18"]
 [ext_resource type="Resource" path="res://data/items/pistol.tres" id="19"]
+[ext_resource type="Resource" path="res://data/items/antibiotics.tres" id="20"]
 
 [sub_resource type="Resource" id="E0"]
 script = ExtResource("2")
@@ -93,10 +94,18 @@ min_quantity = 1
 max_quantity = 1
 min_tier = 1
 
+[sub_resource type="Resource" id="EX"]
+script = ExtResource("2")
+item = ExtResource("20")
+weight = 1.5
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
 [resource]
 script = ExtResource("1")
 id = &"locker"
-entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3"), SubResource("E4"), SubResource("E5"), SubResource("E6"), SubResource("E7"), SubResource("E8"), SubResource("E9")])
+entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3"), SubResource("E4"), SubResource("E5"), SubResource("E6"), SubResource("E7"), SubResource("E8"), SubResource("E9"), SubResource("EX")])
 min_rolls = 1
 max_rolls = 2
 extra_rolls_per_tier = 1

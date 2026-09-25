@@ -49,6 +49,9 @@ extends Resource
 @export var npc_camp_count: int = 0
 ## Distancia mínima entre un campamento y la aparición del jugador.
 @export var npc_camp_min_distance_m: float = 0.0
+## Puntos de spawn de zombis a generar y distancia mínima a la aparición del jugador.
+@export var zombie_spawn_points: int = 0
+@export var zombie_min_distance_to_spawn_m: float = 0.0
 
 
 ## Número de muestras por lado del heightmap.

@@ -41,3 +41,5 @@ vegetation_layers = Array[ExtResource("9")]([ExtResource("10"), ExtResource("11"
 npc_archetypes = Array[ExtResource("14")]([ExtResource("15")])
 npc_camp_count = 2
 npc_camp_min_distance_m = 200.0
+zombie_spawn_points = 80
+zombie_min_distance_to_spawn_m = 50.0

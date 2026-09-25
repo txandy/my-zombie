@@ -3,7 +3,7 @@ extends ItemUseEffect
 ## Efecto médico sobre el HealthComponent del usuario (GDD §5.1): vendas, torniquete,
 ## férula y analgésicos. Se aplica en el host.
 
-enum Treatment { STOP_LIGHT_BLEED, STOP_HEAVY_BLEED, FIX_FRACTURE, PAINKILLER }
+enum Treatment { STOP_LIGHT_BLEED, STOP_HEAVY_BLEED, FIX_FRACTURE, PAINKILLER, CURE_INFECTION }
 
 @export var treatment: Treatment = Treatment.STOP_LIGHT_BLEED
 ## Solo analgésicos: segundos de efecto.
@@ -21,6 +21,8 @@ func can_apply(user: Node) -> bool:
 			return health.has_bleeding(HealthComponent.Bleed.HEAVY)
 		Treatment.FIX_FRACTURE:
 			return health.has_fracture()
+		Treatment.CURE_INFECTION:
+			return health.infected
 	return true
 
 
@@ -35,6 +37,8 @@ func apply(user: Node) -> bool:
 			return health.stop_bleeding(HealthComponent.Bleed.HEAVY)
 		Treatment.FIX_FRACTURE:
 			return health.fix_fracture()
+		Treatment.CURE_INFECTION:
+			return health.cure_infection()
 	health.suppress_pain(duration_s)
 	return true
 

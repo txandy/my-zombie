@@ -60,6 +60,7 @@ func _spawn_npcs() -> void:
 				_builder.get_node(^"POIs"), registry)
 		CampSpawner.spawn_camp(npcs, camp, i, settings.npc_archetypes[camp.archetype_index], _height_at)
 	manager.update_lods()
+	_spawn_zombies()
 
 
 func _height_at(point: Vector3) -> float:
@@ -73,3 +74,12 @@ func _climate_at(point: Vector3) -> float:
 	var x: int = clampi(roundi(point.x / data.cell_size_m), 0, data.resolution - 1)
 	var z: int = clampi(roundi(point.z / data.cell_size_m), 0, data.resolution - 1)
 	return data.temperature[data.index(x, z)]
+
+
+func _spawn_zombies() -> void:
+	var director := ZombieDirector.new()
+	director.name = "Zombies"
+	director.zombie_scene = load("res://scenes/ai/zombie.tscn") as PackedScene
+	director.cycle = $DayNightCycle as DayNightCycle
+	director.spawn_points = data.spawns.zombie_points
+	add_child(director)
