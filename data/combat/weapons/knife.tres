@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/weapons/weapon_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"knife"
+display_name = "Cuchillo"
+kind = 1
+slot = 3
+melee_damage = 35.0
+melee_range_m = 1.8
+melee_interval_s = 0.6

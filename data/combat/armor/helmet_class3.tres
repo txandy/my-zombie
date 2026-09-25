@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/armor/armor_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"helmet_class3"
+display_name = "Casco (clase 3)"
+armor_class = 3
+max_durability = 40.0
+protected_zones = Array[int]([0])
+blunt_damage_factor = 0.3
+penetrated_damage_factor = 0.85
+durability_loss_factor = 0.5

@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AmmoDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/weapons/ammo_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"762x39_ps"
+display_name = "7.62x39 PS"
+caliber = &"762x39"
+damage = 57.0
+penetration = 35.0
+muzzle_velocity_mps = 715.0
+projectile_count = 1

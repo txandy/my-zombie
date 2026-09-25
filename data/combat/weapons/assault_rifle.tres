@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="WeaponDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/combat/weapons/weapon_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://data/combat/ammo/762x39_ps.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"assault_rifle"
+display_name = "Fusil de asalto"
+kind = 0
+slot = 0
+fire_mode = 1
+rounds_per_minute = 600.0
+caliber = &"762x39"
+magazine_size = 30
+reload_time_s = 2.6
+default_ammo = ExtResource("2")
+spread_moa = 3.5
+hip_spread_multiplier = 8.0
+recoil_vertical_deg = 0.9
+recoil_horizontal_deg = 0.35
+recoil_recovery = 6.0

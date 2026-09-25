@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="AmmoDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/weapons/ammo_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"9x19_pst"
+display_name = "9x19 PST"
+caliber = &"9x19"
+damage = 50.0
+penetration = 20.0
+muzzle_velocity_mps = 460.0
+projectile_count = 1

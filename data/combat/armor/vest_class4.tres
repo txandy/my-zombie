@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="ArmorDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/armor/armor_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"vest_class4"
+display_name = "Chaleco (clase 4)"
+armor_class = 4
+max_durability = 60.0
+protected_zones = Array[int]([1, 2])
+blunt_damage_factor = 0.25
+penetrated_damage_factor = 0.85
+durability_loss_factor = 0.5

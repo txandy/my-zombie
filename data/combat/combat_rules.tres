@@ -1,0 +1,8 @@
+[gd_resource type="Resource" script_class="CombatRules" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/combat/combat_rules.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+penetration_spread = 15.0
+min_armor_effectiveness = 0.5
