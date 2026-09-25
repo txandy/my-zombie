@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3]
+[gd_scene load_steps=26 format=3]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/player/default_movement_profile.tres" id="2_profile"]
@@ -17,6 +17,7 @@
 [ext_resource type="Script" path="res://src/ui/combat_hud.gd" id="18_hud"]
 [ext_resource type="Script" path="res://src/inventory/inventory_component.gd" id="20_inventory"]
 [ext_resource type="Resource" path="res://data/inventory/human_inventory_profile.tres" id="21_inv_profile"]
+[ext_resource type="Script" path="res://src/player/interactor.gd" id="22_interactor"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 resource_local_to_scene = true
@@ -79,6 +80,9 @@ rules = ExtResource("11_rules")
 [node name="Inventory" type="Node" parent="."]
 script = ExtResource("20_inventory")
 profile = ExtResource("21_inv_profile")
+
+[node name="Interactor" type="Node" parent="."]
+script = ExtResource("22_interactor")
 
 [node name="WeaponHolder" type="Node" parent="." node_paths=PackedStringArray("health", "damage_receiver", "body")]
 script = ExtResource("13_holder")

@@ -14,12 +14,18 @@ signal inventory_changed()
 signal item_dropped(item: ItemInstance)
 ## Host: una operación pedida se ha rechazado (para feedback en la UI).
 signal request_rejected(reason: String)
+## Se ha abierto un contenedor externo (la UI abre el inventario al lado).
+signal external_opened(container: ItemContainer, title: String)
 
 @export var profile: InventoryProfile
 ## Peer dueño de este personaje (1 = host).
 @export var owner_peer_id: int = 1
+## Distancia a partir de la cual se cierra un contenedor externo abierto.
+@export var external_max_distance_m: float = 3.5
 
 var inventory: Inventory
+## Nodo del mundo de cada contenedor externo abierto (para cerrarlo al alejarse).
+var _external_sources: Dictionary[StringName, Node3D] = {}
 
 
 func _ready() -> void:
@@ -29,14 +35,32 @@ func _ready() -> void:
 
 # --- Contenedores externos (los abre el host al interactuar) ---
 
-func open_external(container: ItemContainer) -> void:
+func open_external(container: ItemContainer, source: Node3D = null, title: String = "") -> void:
 	inventory.external[container.id] = container
+	if source != null:
+		_external_sources[container.id] = source
 	inventory_changed.emit()
+	if title == "" and source != null:
+		title = String(source.name)
+	external_opened.emit(container, title)
 
 
 func close_external(container_id: StringName) -> void:
+	_external_sources.erase(container_id)
 	if inventory.external.erase(container_id):
 		inventory_changed.emit()
+
+
+func _physics_process(_delta: float) -> void:
+	if _external_sources.is_empty():
+		return
+	var me := get_parent() as Node3D
+	if me == null:
+		return
+	for id: StringName in _external_sources.keys():
+		var source: Node3D = _external_sources[id]
+		if not is_instance_valid(source) or me.global_position.distance_to(source.global_position) > external_max_distance_m:
+			close_external(id)
 
 
 # --- Solicitudes (dueño -> host) ---

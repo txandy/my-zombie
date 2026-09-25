@@ -1,5 +1,11 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://scenes/loot/medical_cabinet.tscn" id="loot_medical_cabinet"]
+
+[ext_resource type="PackedScene" path="res://scenes/loot/locker.tscn" id="loot_locker"]
+
+[ext_resource type="PackedScene" path="res://scenes/loot/shelf.tscn" id="loot_shelf"]
+
 [node name="Supermarket" type="Node3D"]
 
 [node name="Geometry" type="CSGCombiner3D" parent="."]
@@ -55,17 +61,17 @@ size = Vector3(2, 1.5, 4.5)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.75, -12)
 size = Vector3(2, 1.5, 4.5)
 
-[node name="Aisle1" type="Marker3D" parent="Markers/Loot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0.5, 8)
+[node name="Aisle1" parent="Markers/Loot" instance=ExtResource("loot_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.5, 0, 8)
 
-[node name="Aisle2" type="Marker3D" parent="Markers/Loot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 8)
+[node name="Aisle2" parent="Markers/Loot" instance=ExtResource("loot_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 8)
 
-[node name="Aisle3" type="Marker3D" parent="Markers/Loot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0.5, 8)
+[node name="Aisle3" parent="Markers/Loot" instance=ExtResource("loot_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.5, 0, 8)
 
-[node name="Storage" type="Marker3D" parent="Markers/Loot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0.5, 15)
+[node name="Storage" parent="Markers/Loot" instance=ExtResource("loot_locker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 15)
 
 [node name="Lot" type="Marker3D" parent="Markers/Spawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14)
@@ -75,3 +81,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -12.8)
 
 [node name="CarCoverB" type="Marker3D" parent="Markers/Cover"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -14.8)
+
+[node name="Office" parent="Markers/Loot" instance=ExtResource("loot_medical_cabinet")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1.0, 15)

@@ -1,5 +1,9 @@
 [gd_scene format=3]
 
+[ext_resource type="PackedScene" path="res://scenes/loot/shelf.tscn" id="loot_shelf"]
+
+[ext_resource type="PackedScene" path="res://scenes/loot/locker.tscn" id="loot_locker"]
+
 [node name="GasStation" type="Node3D"]
 
 [node name="Geometry" type="CSGCombiner3D" parent="."]
@@ -59,11 +63,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.05, 3)
 size = Vector3(1.8, 2.1, 0.6)
 operation = 2
 
-[node name="Counter" type="Marker3D" parent="Markers/Loot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 7.5)
+[node name="Counter" parent="Markers/Loot" instance=ExtResource("loot_locker")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 7.5)
 
-[node name="Shelves" type="Marker3D" parent="Markers/Loot"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0.5, 6)
+[node name="Shelves" parent="Markers/Loot" instance=ExtResource("loot_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.5, 0, 6)
 
 [node name="Forecourt" type="Marker3D" parent="Markers/Spawns"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -9)

@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="LootTable" load_steps=7 format=3]
+
+[ext_resource type="Script" path="res://src/loot/loot_table.gd" id="1"]
+[ext_resource type="Script" path="res://src/loot/loot_entry.gd" id="2"]
+[ext_resource type="Resource" path="res://data/items/canned_food.tres" id="10"]
+[ext_resource type="Resource" path="res://data/items/water_bottle.tres" id="11"]
+
+[sub_resource type="Resource" id="E0"]
+script = ExtResource("2")
+item = ExtResource("10")
+weight = 5
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("2")
+item = ExtResource("11")
+weight = 5
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[resource]
+script = ExtResource("1")
+id = &"fridge"
+entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1")])
+min_rolls = 0
+max_rolls = 2
+extra_rolls_per_tier = 0
+empty_chance = 0.3

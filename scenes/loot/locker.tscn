@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/loot/loot_container.gd" id="1"]
+[ext_resource type="Resource" path="res://data/loot/locker.tres" id="2"]
+
+[node name="Locker" type="StaticBody3D"]
+script = ExtResource("1")
+table = ExtResource("2")
+display_name = "taquilla"
+grid_size = Vector2i(4, 5)
+box_size = Vector3(0.6, 1.9, 0.5)
+color = Color(0.45, 0.5, 0.55, 1)

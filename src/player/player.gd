@@ -22,6 +22,7 @@ var spawn_point: Vector3 = Vector3.ZERO
 @onready var armor: ArmorComponent = $Armor
 @onready var weapons: WeaponHolder = $WeaponHolder
 @onready var inventory: InventoryComponent = $Inventory
+@onready var interactor: Interactor = $Interactor
 @onready var _viewmodel: Viewmodel = $Head/Camera3D/Viewmodel
 
 
@@ -40,6 +41,7 @@ func _ready() -> void:
 	health.died.connect(_on_died)
 	weapons.ammo_provider = inventory
 	inventory.inventory_changed.connect(_sync_equipment)
+	inventory.item_dropped.connect(_on_item_dropped)
 	inventory.apply_kit(starting_kit)
 	_sync_equipment()
 	_viewmodel.show_weapon(weapons.current())
@@ -68,6 +70,8 @@ func step(frame: PlayerInputFrame, delta: float) -> void:
 	_hitboxes.scale.y = _posture.current_height / movement_profile.standing_height
 	move_and_slide()
 	_handle_weapons(frame)
+	if frame.interact:
+		interactor.request_interact()
 
 
 func _handle_weapons(frame: PlayerInputFrame) -> void:
@@ -112,3 +116,13 @@ func _sync_equipment() -> void:
 	weapons.set_weapon_items([inv.item_in(Inventory.Slot.PRIMARY), inv.item_in(Inventory.Slot.SECONDARY),
 			inv.item_in(Inventory.Slot.PISTOL), inv.item_in(Inventory.Slot.MELEE)])
 	armor.set_from_items([inv.item_in(Inventory.Slot.HELMET), inv.item_in(Inventory.Slot.TORSO)])
+
+
+func camera() -> Camera3D:
+	return _head.camera()
+
+
+## Host: un objeto tirado aparece delante del jugador.
+func _on_item_dropped(item: ItemInstance) -> void:
+	var spot: Vector3 = global_position + Vector3.UP * 0.8 - global_basis.z * 0.7
+	WorldItem.spawn(item, spot, get_parent())

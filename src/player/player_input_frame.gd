@@ -26,3 +26,5 @@ var aim: bool = false
 var reload: bool = false
 ## Arma pedida en este tick (0 principal, 1 secundaria, 2 pistola, 3 cuerpo a cuerpo) o -1.
 var weapon_slot: int = -1
+## Interactuar (F) en este tick.
+var interact: bool = false

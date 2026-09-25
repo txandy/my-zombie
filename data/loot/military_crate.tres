@@ -1,0 +1,94 @@
+[gd_resource type="Resource" script_class="LootTable" load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://src/loot/loot_table.gd" id="1"]
+[ext_resource type="Script" path="res://src/loot/loot_entry.gd" id="2"]
+[ext_resource type="Resource" path="res://data/items/ammo_762x39_ps.tres" id="10"]
+[ext_resource type="Resource" path="res://data/items/ammo_762x39_hp.tres" id="11"]
+[ext_resource type="Resource" path="res://data/items/ammo_9x19_pst.tres" id="12"]
+[ext_resource type="Resource" path="res://data/items/pistol.tres" id="13"]
+[ext_resource type="Resource" path="res://data/items/assault_rifle.tres" id="14"]
+[ext_resource type="Resource" path="res://data/items/helmet_class3.tres" id="15"]
+[ext_resource type="Resource" path="res://data/items/vest_class4.tres" id="16"]
+[ext_resource type="Resource" path="res://data/items/backpack_large.tres" id="17"]
+[ext_resource type="Resource" path="res://data/items/rig_basic.tres" id="18"]
+
+[sub_resource type="Resource" id="E0"]
+script = ExtResource("2")
+item = ExtResource("10")
+weight = 4
+min_quantity = 20
+max_quantity = 60
+min_tier = 1
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("2")
+item = ExtResource("11")
+weight = 2
+min_quantity = 20
+max_quantity = 60
+min_tier = 2
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("2")
+item = ExtResource("12")
+weight = 3
+min_quantity = 20
+max_quantity = 50
+min_tier = 1
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("2")
+item = ExtResource("13")
+weight = 1
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("2")
+item = ExtResource("14")
+weight = 0.6
+min_quantity = 1
+max_quantity = 1
+min_tier = 2
+
+[sub_resource type="Resource" id="E5"]
+script = ExtResource("2")
+item = ExtResource("15")
+weight = 1
+min_quantity = 1
+max_quantity = 1
+min_tier = 2
+
+[sub_resource type="Resource" id="E6"]
+script = ExtResource("2")
+item = ExtResource("16")
+weight = 0.5
+min_quantity = 1
+max_quantity = 1
+min_tier = 3
+
+[sub_resource type="Resource" id="E7"]
+script = ExtResource("2")
+item = ExtResource("17")
+weight = 0.5
+min_quantity = 1
+max_quantity = 1
+min_tier = 2
+
+[sub_resource type="Resource" id="E8"]
+script = ExtResource("2")
+item = ExtResource("18")
+weight = 1
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[resource]
+script = ExtResource("1")
+id = &"military_crate"
+entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3"), SubResource("E4"), SubResource("E5"), SubResource("E6"), SubResource("E7"), SubResource("E8")])
+min_rolls = 1
+max_rolls = 2
+extra_rolls_per_tier = 1
+empty_chance = 0.1

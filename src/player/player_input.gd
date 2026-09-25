@@ -6,6 +6,14 @@ extends Node
 ## Sensibilidad del ratón en radianes por píxel. Es un ajuste del usuario, no de balance.
 @export var mouse_sensitivity: float = 0.002
 
+## False mientras hay una pantalla abierta (inventario): no se lee entrada de juego
+## y el ratón queda libre. Lo cambia la UI.
+var gameplay_enabled: bool = true:
+	set(value):
+		gameplay_enabled = value
+		_look_accum = Vector2.ZERO
+		Input.mouse_mode = Input.MOUSE_MODE_CAPTURED if value else Input.MOUSE_MODE_VISIBLE
+
 var _look_accum: Vector2 = Vector2.ZERO
 
 
@@ -14,6 +22,8 @@ func _ready() -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if not gameplay_enabled:
+		return
 	var motion := event as InputEventMouseMotion
 	if motion != null:
 		if Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
@@ -28,6 +38,8 @@ func _unhandled_input(event: InputEvent) -> void:
 ## Devuelve la entrada acumulada desde el último poll. Llamar una vez por tick de física.
 func poll() -> PlayerInputFrame:
 	var frame := PlayerInputFrame.new()
+	if not gameplay_enabled:
+		return frame
 	frame.move = Input.get_vector(&"move_left", &"move_right", &"move_back", &"move_forward")
 	frame.look_delta = _look_accum
 	frame.jump = Input.is_action_just_pressed(&"jump")
@@ -44,5 +56,6 @@ func poll() -> PlayerInputFrame:
 			frame.weapon_slot = slot
 	if Input.is_action_just_pressed(&"weapon_melee"):
 		frame.weapon_slot = 3
+	frame.interact = Input.is_action_just_pressed(&"interact")
 	_look_accum = Vector2.ZERO
 	return frame

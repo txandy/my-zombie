@@ -90,6 +90,24 @@ func _build_pois(data: WorldData, settings: WorldGenSettings) -> void:
 		instance.position = poi.position
 		instance.rotation.y = poi.rotation_steps * PI * 0.5
 		root.add_child(instance)
+		_setup_loot(instance, def, _biome_at(data, settings, poi.position))
+
+
+# Da a cada contenedor de loot del POI un id estable (POI + nodo), el tier y el bioma.
+func _setup_loot(poi_node: Node, def: PoiDefinition, biome_id: StringName) -> void:
+	for node: Node in poi_node.find_children("*", "", true, false):
+		var container := node as LootContainer
+		if container == null:
+			continue
+		container.container_id = StringName("%s/%s" % [poi_node.name, poi_node.get_path_to(container)])
+		container.poi_tier = def.tier
+		container.biome_id = biome_id
+
+
+static func _biome_at(data: WorldData, settings: WorldGenSettings, point: Vector3) -> StringName:
+	var x: int = clampi(roundi(point.x / data.cell_size_m), 0, data.resolution - 1)
+	var z: int = clampi(roundi(point.z / data.cell_size_m), 0, data.resolution - 1)
+	return settings.biomes[data.biomes[data.index(x, z)]].id
 
 
 func _build_vegetation(data: WorldData, settings: WorldGenSettings) -> void:
