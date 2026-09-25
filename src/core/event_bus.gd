@@ -16,3 +16,11 @@ signal session_ended()
 ## `radius_m` es la distancia máxima a la que se oye con audición normal.
 @warning_ignore("unused_signal")
 signal sound_emitted(position: Vector3, radius_m: float, kind: StringName, source: Node)
+
+## Ha empezado un día nuevo (a las 00:00). `day` empieza en 1.
+@warning_ignore("unused_signal")
+signal day_started(day: int)
+
+## Cambio entre día y noche (GDD §4.5).
+@warning_ignore("unused_signal")
+signal night_changed(is_night: bool)

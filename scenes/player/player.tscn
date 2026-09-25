@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3]
+[gd_scene load_steps=31 format=3]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/player/default_movement_profile.tres" id="2_profile"]
@@ -21,6 +21,8 @@
 [ext_resource type="Script" path="res://src/ui/inventory/inventory_screen.gd" id="23_inventory_screen"]
 [ext_resource type="Script" path="res://src/ai/common/footstep_emitter.gd" id="24_footsteps"]
 [ext_resource type="Resource" path="res://data/ai/perception_rules.tres" id="25_perception_rules"]
+[ext_resource type="Script" path="res://src/survival/survival_component.gd" id="26_survival"]
+[ext_resource type="Resource" path="res://data/survival/human_survival.tres" id="27_survival_profile"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 resource_local_to_scene = true
@@ -87,6 +89,11 @@ profile = ExtResource("21_inv_profile")
 [node name="Interactor" type="Node" parent="."]
 script = ExtResource("22_interactor")
 
+[node name="Survival" type="Node" parent="." node_paths=PackedStringArray("health")]
+script = ExtResource("26_survival")
+profile = ExtResource("27_survival_profile")
+health = NodePath("../Health")
+
 [node name="Footsteps" type="Node" parent="." node_paths=PackedStringArray("body")]
 script = ExtResource("24_footsteps")
 rules = ExtResource("25_perception_rules")
@@ -127,7 +134,7 @@ mesh = SubResource("Mesh_knife")
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
-[node name="CombatHud" type="Control" parent="HUD" node_paths=PackedStringArray("health", "weapons", "receiver", "interactor")]
+[node name="CombatHud" type="Control" parent="HUD" node_paths=PackedStringArray("health", "weapons", "receiver", "interactor", "survival")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -140,6 +147,7 @@ health = NodePath("../../Health")
 weapons = NodePath("../../WeaponHolder")
 receiver = NodePath("../../DamageReceiver")
 interactor = NodePath("../../Interactor")
+survival = NodePath("../../Survival")
 
 [node name="Crosshair" type="Label" parent="HUD/CombatHud"]
 layout_mode = 1
@@ -219,6 +227,21 @@ offset_top = 30.0
 offset_right = 200.0
 offset_bottom = 56.0
 horizontal_alignment = 1
+
+[node name="StaminaBar" type="ProgressBar" parent="HUD/CombatHud"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -120.0
+offset_top = -28.0
+offset_right = 120.0
+offset_bottom = -20.0
+mouse_filter = 2
+show_percentage = false
+value = 100.0
 
 [node name="InventoryScreen" type="Control" parent="HUD" node_paths=PackedStringArray("component", "health", "player_input")]
 layout_mode = 3

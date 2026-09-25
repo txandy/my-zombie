@@ -1,0 +1,31 @@
+[gd_resource type="Resource" script_class="SurvivalProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/survival/survival_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+max_hunger = 100.0
+max_thirst = 100.0
+hunger_per_hour = 2.4
+thirst_per_hour = 3.3
+destroyed_stomach_multiplier = 2.0
+starvation_damage_per_hour = 8.0
+critical_level = 30.0
+climate_min_c = -10.0
+climate_max_c = 40.0
+night_drop_c = 8.0
+comfort_min_c = 4.0
+comfort_max_c = 32.0
+body_drift_per_hour_per_c = 0.05
+body_recovery_per_hour = 0.8
+hypothermia_c = 35.0
+hyperthermia_c = 39.0
+hypothermia_damage_per_hour = 6.0
+hyperthermia_thirst_multiplier = 2.0
+max_stamina = 100.0
+sprint_drain_per_s = 11.0
+aim_drain_per_s = 4.0
+jump_cost = 10.0
+regen_per_s = 16.0
+regen_delay_s = 1.0
+hypothermia_regen_multiplier = 0.5

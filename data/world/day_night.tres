@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="DayNightSettings" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/world/time/day_night_settings.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+day_length_s = 3600.0
+start_hour = 8.0
+sunrise_hour = 6.0
+sunset_hour = 20.0
+twilight_hours = 1.0
+day_sun_energy = 1.0
+night_sun_energy = 0.03
+day_color = Color(1, 0.97, 0.92, 1)
+dusk_color = Color(1, 0.6, 0.4, 1)
+night_ambient = 0.08
+night_fog_density = 0.004
+day_fog_density = 0.0015
+horde_every_days = 7

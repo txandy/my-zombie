@@ -68,10 +68,12 @@ func has_pain() -> bool:
 
 
 ## Aplica daño a una zona y tira los estados que pueda causar. Solo en el host.
+## Con `rng` null es daño "de condición" (hambre, frío, infección): no causa estados.
 func apply_damage(zone: BodyZones.Zone, amount: float, rng: RandomNumberGenerator) -> void:
 	if is_dead or amount <= 0.0 or not multiplayer.is_server():
 		return
-	_roll_statuses(zone, amount, rng)
+	if rng != null:
+		_roll_statuses(zone, amount, rng)
 	_damage_zone(zone, amount)
 
 

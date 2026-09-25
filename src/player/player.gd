@@ -23,6 +23,7 @@ var spawn_point: Vector3 = Vector3.ZERO
 @onready var weapons: WeaponHolder = $WeaponHolder
 @onready var inventory: InventoryComponent = $Inventory
 @onready var interactor: Interactor = $Interactor
+@onready var survival: SurvivalComponent = $Survival
 @onready var _viewmodel: Viewmodel = $Head/Camera3D/Viewmodel
 
 
@@ -57,8 +58,11 @@ func step(frame: PlayerInputFrame, delta: float) -> void:
 		frame = PlayerInputFrame.new()
 	_head.apply_look(self, frame.look_delta)
 	_posture.update(frame, delta)
-	_movement.sprint_allowed = health.can_sprint()
+	_movement.sprint_allowed = health.can_sprint() and survival.can_sprint()
+	_movement.jump_allowed = survival.can_jump()
 	_movement.speed_multiplier = health.movement_multiplier() * inventory.inventory.speed_multiplier()
+	# El peso encarece la stamina en la misma proporción en que frena (GDD §7.2).
+	survival.stamina_cost_multiplier = 1.0 / maxf(inventory.inventory.speed_multiplier(), 0.1)
 	velocity = _movement.compute_velocity(velocity, frame, global_basis, _posture.posture,
 			is_on_floor(), _posture.changed_this_frame, delta)
 	var can_lean: bool = (_posture.posture != PostureComponent.Posture.PRONE
@@ -68,6 +72,7 @@ func step(frame: PlayerInputFrame, delta: float) -> void:
 	_viewmodel.set_aiming(frame.aim)
 	# Las hitboxes siguen la altura de la postura (aproximación hasta tener esqueleto).
 	_hitboxes.scale.y = _posture.current_height / movement_profile.standing_height
+	_spend_stamina(frame, delta)
 	move_and_slide()
 	_handle_weapons(frame)
 	if frame.interact:
@@ -101,6 +106,7 @@ func _on_died(_zone: BodyZones.Zone) -> void:
 	global_position = spawn_point
 	velocity = Vector3.ZERO
 	health.reset()
+	survival.reset()
 	_sync_equipment()
 
 
@@ -128,3 +134,13 @@ func camera() -> Camera3D:
 func _on_item_dropped(item: ItemInstance) -> void:
 	var spot: Vector3 = global_position + Vector3.UP * 0.8 - global_basis.z * 0.7
 	WorldItem.spawn(item, spot, get_parent())
+
+
+func _spend_stamina(frame: PlayerInputFrame, delta: float) -> void:
+	if _movement.is_sprinting:
+		survival.drain_sprint(delta)
+	if _movement.did_jump:
+		survival.on_jump()
+	var weapon: WeaponDefinition = weapons.current()
+	if frame.aim and weapon != null and weapon.kind == WeaponDefinition.Kind.FIREARM:
+		survival.drain_aim(delta)

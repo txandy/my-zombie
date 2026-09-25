@@ -6,6 +6,7 @@ extends Control
 @export var weapons: WeaponHolder
 @export var receiver: DamageReceiver
 @export var interactor: Interactor
+@export var survival: SurvivalComponent
 ## Segundos que se muestra la salud tras recibir daño (GDD §14: visible al recibir daño).
 @export var health_visible_s: float = 6.0
 
@@ -19,6 +20,7 @@ var _reload_timer: float = 0.0
 @onready var _health_label: Label = $HealthLabel
 @onready var _status_label: Label = $StatusLabel
 @onready var _prompt_label: Label = $PromptLabel
+@onready var _stamina_bar: ProgressBar = $StaminaBar
 
 
 func _ready() -> void:
@@ -43,6 +45,8 @@ func _process(delta: float) -> void:
 	_health_label.visible = _health_timer > 0.0 or health.is_dead
 	_health_label.text = _health_text()
 	_status_label.text = _status_text()
+	_stamina_bar.value = survival.stamina / survival.profile.max_stamina * 100.0
+	_stamina_bar.visible = survival.stamina < survival.profile.max_stamina - 0.5
 	if is_instance_valid(interactor.focused):
 		_prompt_label.text = "[F] %s" % String(interactor.focused.call(&"interaction_text"))
 	else:
@@ -86,4 +90,15 @@ func _status_text() -> String:
 		parts.append("DOLOR")
 	if not health.can_sprint():
 		parts.append("NO PUEDES ESPRINTAR")
+	var critical: float = survival.profile.critical_level
+	if survival.hunger < critical:
+		parts.append("HAMBRE %.0f" % survival.hunger)
+	if survival.thirst < critical:
+		parts.append("SED %.0f" % survival.thirst)
+	if survival.body_temp_c <= survival.profile.hypothermia_c:
+		parts.append("HIPOTERMIA %.1f °C" % survival.body_temp_c)
+	elif survival.body_temp_c < 36.0:
+		parts.append("FRÍO %.1f °C" % survival.body_temp_c)
+	elif survival.body_temp_c >= survival.profile.hyperthermia_c:
+		parts.append("CALOR %.1f °C" % survival.body_temp_c)
 	return "  ·  ".join(parts)

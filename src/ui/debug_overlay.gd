@@ -13,5 +13,6 @@ func _ready() -> void:
 
 func _process(_delta: float) -> void:
 	var pos: Vector3 = _player.global_position if _player != null else Vector3.ZERO
-	text = "seed %d · %d FPS · pos (%.0f, %.0f, %.0f)" % [
-			GameState.world_seed, Engine.get_frames_per_second(), pos.x, pos.y, pos.z]
+	var minutes: int = int(GameState.hour * 60.0) % 60
+	text = "día %d %02d:%02d · seed %d · %d FPS · pos (%.0f, %.0f, %.0f)" % [GameState.day, int(GameState.hour),
+			minutes, GameState.world_seed, Engine.get_frames_per_second(), pos.x, pos.y, pos.z]

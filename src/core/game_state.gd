@@ -9,6 +9,12 @@ var is_session_active: bool = false
 ## Nivel de luz ambiental (0 = noche cerrada, 1 = pleno día). Afecta a la visibilidad para la IA.
 ## Lo actualiza el ciclo día/noche (M5).
 var ambient_light: float = 1.0
+## Día actual (empieza en 1) y hora del día (0-24). Los avanza el ciclo día/noche en el host.
+var day: int = 1
+var hour: float = 8.0
+var is_night: bool = false
+## Horas de juego por segundo real (lo fija el ciclo día/noche; por defecto 1 día = 60 min).
+var game_hours_per_second: float = 24.0 / 3600.0
 
 
 ## Inicia una sesión con `new_world_seed`. Solo el host puede hacerlo.

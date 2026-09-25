@@ -1,6 +1,7 @@
-[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
 
 [ext_resource type="Script" path="res://src/items/item_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://data/items/effects/canned_food_effect.tres" id="2"]
 
 [resource]
 script = ExtResource("1")
@@ -11,3 +12,4 @@ size = Vector2i(1, 1)
 max_stack = 1
 weight_kg = 0.4
 icon_color = Color(0.7, 0.5, 0.25, 1)
+use_effect = ExtResource("2")

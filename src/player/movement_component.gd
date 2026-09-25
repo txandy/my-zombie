@@ -9,6 +9,10 @@ var sprint_allowed: bool = true
 var speed_multiplier: float = 1.0
 ## True si en el último cálculo el jugador estaba esprintando.
 var is_sprinting: bool = false
+## Hook para la stamina: cuando sea false no se puede saltar.
+var jump_allowed: bool = true
+## True si en el último cálculo ha saltado.
+var did_jump: bool = false
 
 var _profile: PlayerMovementProfile
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
@@ -56,7 +60,8 @@ func compute_velocity(current: Vector3, frame: PlayerInputFrame, basis: Basis,
 	velocity.x = horizontal.x
 	velocity.z = horizontal.y
 
-	if (frame.jump and on_floor and posture == PostureComponent.Posture.STANDING
-			and not posture_changed):
+	did_jump = (frame.jump and jump_allowed and on_floor
+			and posture == PostureComponent.Posture.STANDING and not posture_changed)
+	if did_jump:
 		velocity.y = _profile.jump_velocity
 	return velocity

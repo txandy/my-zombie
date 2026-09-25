@@ -33,6 +33,7 @@ func _ready() -> void:
 
 	_player.global_position = data.spawns.player_spawn
 	_player.spawn_point = _player.global_position
+	_player.survival.climate_sampler = _climate_at
 	_spawn_npcs()
 
 
@@ -65,3 +66,10 @@ func _height_at(point: Vector3) -> float:
 	var x: int = clampi(roundi(point.x / data.cell_size_m), 0, data.resolution - 1)
 	var z: int = clampi(roundi(point.z / data.cell_size_m), 0, data.resolution - 1)
 	return data.height_at(x, z)
+
+
+## Temperatura normalizada (0-1) del clima generado en un punto (para la supervivencia).
+func _climate_at(point: Vector3) -> float:
+	var x: int = clampi(roundi(point.x / data.cell_size_m), 0, data.resolution - 1)
+	var z: int = clampi(roundi(point.z / data.cell_size_m), 0, data.resolution - 1)
+	return data.temperature[data.index(x, z)]
