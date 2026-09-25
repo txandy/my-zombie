@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="NPCCombatProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/ai/human/npc_combat_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+archetype = &"bandit"
+vision_range_m = 150.0
+vision_fov_deg = 130.0
+detection_time_s = 0.8
+hearing_multiplier = 1.0
+memory_duration_s = 25.0
+reaction_time_min_s = 0.35
+reaction_time_max_s = 0.55
+base_spread_deg = 2.2
+min_spread_deg = 0.3
+aim_settle_time_s = 1.4
+unsettle_on_lost_sight = 0.5
+spread_per_100m = 0.25
+spread_per_target_mps = 0.2
+lead_fraction = 0.6
+self_moving_spread_multiplier = 2.5
+suppression_spread_deg = 1.5
+max_headshot_chance = 0.15
+burst_min = 2
+burst_max = 4
+burst_pause_s = 0.45
+semi_interval_s = 0.4
+retreat_health_fraction = 0.35
+aggression = 0.6
+peek_time_s = 2.5
+cover_time_s = 1.5
+search_time_s = 20.0
