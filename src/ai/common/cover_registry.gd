@@ -62,3 +62,26 @@ func take_resources(point: Vector3, max_distance_m: float, amount: int) -> Dicti
 
 func _key(point: Vector3) -> Vector2i:
 	return Vector2i(floori(point.x / CELL_M), floori(point.z / CELL_M))
+
+
+## Recursos restantes de todos los obstáculos, en orden estable (para guardar partida).
+## El orden depende solo de cómo se construyó el registro desde WorldData, que es el mismo
+## al cargar la partida.
+func export_resources() -> PackedFloat32Array:
+	var result := PackedFloat32Array()
+	for key: Vector2i in _cells:
+		var data: PackedFloat32Array = _cells[key]
+		for i: int in range(0, data.size(), STRIDE):
+			result.append(data[i + 5])
+	return result
+
+
+func import_resources(values: PackedFloat32Array) -> void:
+	var n: int = 0
+	for key: Vector2i in _cells:
+		var data: PackedFloat32Array = _cells[key]
+		for i: int in range(0, data.size(), STRIDE):
+			if n < values.size():
+				data[i + 5] = values[n]
+			n += 1
+		_cells[key] = data

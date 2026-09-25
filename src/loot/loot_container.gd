@@ -86,3 +86,12 @@ func _build_visual() -> void:
 	shape_node.shape = shape
 	shape_node.position.y = box_size.y * 0.5
 	add_child(shape_node)
+
+
+## Restaura el contenido guardado (ya saqueado o no) sin volver a tirar el loot.
+func restore(list: Array, catalog: ItemCatalog) -> void:
+	is_filled = true
+	if container_id == &"":
+		container_id = StringName("loot_%d" % hash(get_path()))
+	item_container = ItemContainer.new(container_id, [grid_size])
+	ItemSerializer.container_from_list(item_container, list, catalog)

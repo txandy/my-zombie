@@ -264,3 +264,27 @@ func _tick_infection(delta: float) -> void:
 	infection_progress = minf(infection_progress + hours / profile.infection_incubation_hours, 1.0)
 	if infection_progress >= 1.0:
 		_damage_zone(BodyZones.Zone.THORAX, profile.infection_damage_per_hour * hours)
+
+
+# --- Guardado (GDD §13) ---
+
+func to_save() -> Dictionary:
+	var bleeding: Array = []
+	for b: Bleed in _bleeding:
+		bleeding.append(int(b))
+	return {"hp": Array(_hp), "bleeding": bleeding, "fractured": _fractured.duplicate(),
+			"pain": _pain_left_s, "painkiller": _painkiller_left_s, "infected": infected,
+			"infection": infection_progress, "dead": is_dead}
+
+
+func from_save(data: Dictionary) -> void:
+	for zone: BodyZones.Zone in BodyZones.ALL:
+		_hp[zone] = float(data.hp[zone])
+		_bleeding[zone] = int(data.bleeding[zone]) as Bleed
+		_fractured[zone] = bool(data.fractured[zone])
+	_pain_left_s = float(data.pain)
+	_painkiller_left_s = float(data.painkiller)
+	infected = bool(data.infected)
+	infection_progress = float(data.infection)
+	is_dead = bool(data.dead)
+	status_changed.emit()

@@ -358,3 +358,33 @@ func _brain_tick(delta: float) -> void:
 	if _brain_accumulator >= interval:
 		brain.update(_brain_accumulator)
 		_brain_accumulator = 0.0
+
+
+# --- Guardado (GDD §13: NPCs persistentes) ---
+
+func to_save() -> Dictionary:
+	var data: Dictionary = {"dead": is_dead, "pos": global_position, "rot": rotation.y,
+			"home": home_position, "health": health.to_save()}
+	if is_dead:
+		data["corpse"] = ItemSerializer.container_to_list(corpse_container)
+	else:
+		data["inventory"] = ItemSerializer.inventory_to_dict(inventory)
+	return data
+
+
+func from_save(data: Dictionary, catalog: ItemCatalog) -> void:
+	global_position = data.pos
+	rotation.y = float(data.rot)
+	home_position = data.home
+	if bool(data.dead):
+		health.from_save(data.health)
+		is_dead = true
+		stop()
+		brain.stop()
+		_become_corpse()
+		for item: ItemInstance in corpse_container.items():
+			corpse_container.remove(item)
+		ItemSerializer.container_from_list(corpse_container, data.corpse, catalog)
+		return
+	health.from_save(data.health)
+	ItemSerializer.inventory_from_dict(inventory, data.inventory, catalog)

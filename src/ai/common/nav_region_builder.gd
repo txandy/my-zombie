@@ -24,10 +24,12 @@ static func bake(parent: Node3D, center: Vector3, half_size_m: float, terrain: T
 	region.name = "NavRegion"
 	parent.add_child(region)
 	# Los CSG generan su geometría y colisión en el frame siguiente: se parsea después.
+	# Se guarda el árbol: si la escena se libera mientras espera, el trabajo se cancela.
+	var tree: SceneTree = parent.get_tree()
 	var job := func() -> void:
-		await parent.get_tree().process_frame
-		await parent.get_tree().physics_frame
-		if not is_instance_valid(region):
+		await tree.process_frame
+		await tree.physics_frame
+		if not is_instance_valid(region) or not region.is_inside_tree():
 			return
 		var source := NavigationMeshSourceGeometryData3D.new()
 		if geometry_root != null and is_instance_valid(geometry_root):
