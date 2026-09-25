@@ -10,6 +10,8 @@ const TEST_SCENES: Dictionary[String, String] = {
 
 var _seed_edit: LineEdit
 var _saves_box: VBoxContainer
+var _name_edit: LineEdit
+var _address_edit: LineEdit
 
 
 func _ready() -> void:
@@ -32,6 +34,7 @@ func _ready() -> void:
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	column.add_child(title)
 	column.add_child(_new_game_row())
+	column.add_child(_coop_rows())
 	var latest: Array[Dictionary] = SaveSystem.list_saves()
 	if not latest.is_empty():
 		column.add_child(_button("Continuar (%s)" % latest[0].name, _load.bind(String(latest[0].name))))
@@ -71,7 +74,45 @@ func _refresh_saves() -> void:
 		_saves_box.add_child(row)
 
 
+## Coop (GDD §12): hospedar una partida nueva o unirse a un host por IP.
+func _coop_rows() -> Control:
+	var box := VBoxContainer.new()
+	box.add_child(_label("Cooperativo"))
+	var row := HBoxContainer.new()
+	_name_edit = LineEdit.new()
+	_name_edit.text = NetManager.player_name
+	_name_edit.placeholder_text = "Tu nombre"
+	_name_edit.custom_minimum_size.x = 140
+	row.add_child(_name_edit)
+	_address_edit = LineEdit.new()
+	_address_edit.text = NetManager.join_address
+	_address_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(_address_edit)
+	row.add_child(_button("Unirse", _join))
+	row.add_child(_button("Hospedar", _host))
+	box.add_child(row)
+	return box
+
+
+func _host() -> void:
+	_start_new_game(NetManager.Mode.HOST)
+
+
+func _join() -> void:
+	NetManager.mode = NetManager.Mode.CLIENT
+	NetManager.player_name = _name_edit.text.strip_edges() if _name_edit.text.strip_edges() != "" else "Jugador"
+	NetManager.join_address = _address_edit.text.strip_edges()
+	SaveSystem.pending_load = ""
+	get_tree().change_scene_to_file(WORLD_SCENE)
+
+
 func _new_game() -> void:
+	_start_new_game(NetManager.Mode.SINGLE)
+
+
+func _start_new_game(net_mode: NetManager.Mode) -> void:
+	NetManager.mode = net_mode
+	NetManager.player_name = _name_edit.text.strip_edges() if _name_edit.text.strip_edges() != "" else "Jugador"
 	var text: String = _seed_edit.text.strip_edges()
 	SaveSystem.pending_load = ""
 	SaveSystem.pending_seed = text.to_int() if text.is_valid_int() else (hash(text) if text != "" else 0)
@@ -79,6 +120,7 @@ func _new_game() -> void:
 
 
 func _load(save_name: String) -> void:
+	NetManager.mode = NetManager.Mode.SINGLE
 	SaveSystem.pending_load = save_name
 	get_tree().change_scene_to_file(WORLD_SCENE)
 

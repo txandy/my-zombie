@@ -25,6 +25,8 @@ fog_density = 0.0015
 [node name="World" type="Node3D"]
 script = ExtResource("1_root")
 settings = ExtResource("2_settings")
+starting_kit = ExtResource("6_kit")
+player_scene = ExtResource("4_player")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment")
@@ -43,13 +45,9 @@ environment = NodePath("../WorldEnvironment")
 [node name="WorldBuilder" type="Node3D" parent="."]
 script = ExtResource("3_builder")
 
-[node name="Player" parent="." instance=ExtResource("4_player")]
-starting_kit = ExtResource("6_kit")
-
 [node name="DebugOverlay" type="Label" parent="."]
 offset_left = 12.0
 offset_top = 8.0
 offset_right = 600.0
 offset_bottom = 34.0
 script = ExtResource("5_overlay")
-player_path = NodePath("../Player")

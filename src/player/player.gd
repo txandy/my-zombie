@@ -12,6 +12,8 @@ extends CharacterBody3D
 @export var starting_kit: StartingKit
 
 var spawn_point: Vector3 = Vector3.ZERO
+## Peer dueño de este jugador (1 = host). Lo fija quien lo crea antes de añadirlo al árbol.
+var peer_id: int = 1
 
 @onready var _input: PlayerInput = $PlayerInput
 @onready var _posture: PostureComponent = $Posture
@@ -26,6 +28,7 @@ var spawn_point: Vector3 = Vector3.ZERO
 @onready var survival: SurvivalComponent = $Survival
 @onready var build_tool: BuildTool = $BuildTool
 @onready var _viewmodel: Viewmodel = $Head/Camera3D/Viewmodel
+@onready var net: PlayerNet = $PlayerNet
 
 
 func _ready() -> void:
@@ -33,6 +36,10 @@ func _ready() -> void:
 	collision_layer = PhysicsLayers.CHARACTERS
 	collision_mask = PhysicsLayers.WORLD | PhysicsLayers.CHARACTERS
 	add_to_group(&"player")
+	inventory.owner_peer_id = peer_id
+	weapons.owner_peer_id = peer_id
+	if not is_local():
+		_become_remote()
 	_posture.setup(self, $CollisionShape3D, _head, movement_profile)
 	_movement.setup(movement_profile)
 	_head.setup(movement_profile)
@@ -47,10 +54,17 @@ func _ready() -> void:
 	inventory.apply_kit(starting_kit)
 	_sync_equipment()
 	_viewmodel.show_weapon(weapons.current())
+	net.setup(self)
 
 
 func _physics_process(delta: float) -> void:
-	step(_input.poll(), delta)
+	if is_local():
+		step(_input.poll(), delta)
+		net.publish_local()
+		return
+	net.apply_remote()
+	if multiplayer.is_server():
+		net.server_tick(delta)
 
 
 ## Simula un tick de movimiento y combate con la entrada dada.
@@ -101,14 +115,24 @@ func _handle_weapons(frame: PlayerInputFrame) -> void:
 		weapons.request_attack(cam.global_position, -cam.global_basis.z, frame.aim)
 
 
-func _on_shot_fired(weapon: WeaponDefinition) -> void:
-	_head.add_recoil(weapon)
+func _on_shot_fired(_weapon: WeaponDefinition) -> void:
+	if is_local():
+		play_shot_feedback()
+
+
+## Retroceso y animación del disparo (en el dueño; en un cliente llega del host).
+func play_shot_feedback() -> void:
+	var weapon: WeaponDefinition = weapons.current()
+	if weapon != null:
+		_head.add_recoil(weapon)
 	_viewmodel.kick()
 
 
 func _on_died(_zone: BodyZones.Zone) -> void:
+	if not multiplayer.is_server():
+		return
 	await get_tree().create_timer(respawn_time_s).timeout
-	global_position = spawn_point
+	net.teleport(spawn_point)
 	velocity = Vector3.ZERO
 	health.reset()
 	survival.reset()
@@ -149,3 +173,37 @@ func _spend_stamina(frame: PlayerInputFrame, delta: float) -> void:
 	var weapon: WeaponDefinition = weapons.current()
 	if frame.aim and weapon != null and weapon.kind == WeaponDefinition.Kind.FIREARM:
 		survival.drain_aim(delta)
+
+
+# --- Red ---
+
+## True si este jugador lo controla este peer.
+func is_local() -> bool:
+	return peer_id == multiplayer.get_unique_id()
+
+
+func head_pitch() -> float:
+	return _head.rotation.x
+
+
+## ¿Pisa suelo? (en jugadores remotos lo dice su dueño).
+func is_grounded() -> bool:
+	return is_on_floor() if is_local() else net.net_on_floor
+
+
+## Postura y mirada de un jugador remoto (para las hitboxes, la IA y lo que ven los demás).
+func apply_net_posture(posture: int, pitch: float) -> void:
+	_posture.posture = posture as PostureComponent.Posture
+	_posture.current_height = PostureComponent.height_for(movement_profile, _posture.posture)
+	_hitboxes.scale.y = _posture.current_height / movement_profile.standing_height
+	_head.rotation.x = pitch
+
+
+# Un jugador que no es de este peer: sin cámara, sin HUD, sin entrada local.
+func _become_remote() -> void:
+	_head.camera().current = false
+	_viewmodel.visible = false
+	for node: Node in [$HUD, _input, build_tool]:
+		node.process_mode = Node.PROCESS_MODE_DISABLED
+	($HUD as CanvasLayer).visible = false
+	interactor.set_physics_process(false)

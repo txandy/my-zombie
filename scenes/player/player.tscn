@@ -1,4 +1,4 @@
-[gd_scene load_steps=44 format=3]
+[gd_scene load_steps=45 format=3]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/player/default_movement_profile.tres" id="2_profile"]
@@ -36,6 +36,7 @@
 [ext_resource type="Resource" path="res://data/building/pieces/pillar.tres" id="38_p_pillar"]
 [ext_resource type="Resource" path="res://data/building/materials/wood.tres" id="39_m_wood"]
 [ext_resource type="Resource" path="res://data/building/materials/stone.tres" id="40_m_stone"]
+[ext_resource type="Script" path="res://src/net/player_net.gd" id="41_player_net"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 resource_local_to_scene = true
@@ -106,6 +107,9 @@ script = ExtResource("22_interactor")
 script = ExtResource("26_survival")
 profile = ExtResource("27_survival_profile")
 health = NodePath("../Health")
+
+[node name="PlayerNet" type="Node" parent="."]
+script = ExtResource("41_player_net")
 
 [node name="BuildTool" type="Node" parent="."]
 script = ExtResource("28_build_tool")

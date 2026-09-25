@@ -179,6 +179,7 @@ func _server_place(player_path: NodePath, def_path: String, material_path: Strin
 	var piece: BaseModel.Piece = base.add(def, material, slot.cell, slot.side)
 	if piece != null:
 		spawn_piece_node(base, piece)
+		_broadcast_piece(base, piece)
 		EventBus.sound_emitted.emit(point, 30.0, &"construction", player)
 		base_changed.emit(base.id)
 
@@ -197,6 +198,7 @@ func _server_upgrade(player_path: NodePath, piece_path: NodePath, material_path:
 	var base: BaseModel = find_base(node.base_id)
 	if base.upgrade(node.piece, material):
 		node.refresh_material()
+		broadcast_piece_state(base.id, node.piece)
 		base_changed.emit(base.id)
 
 
@@ -285,6 +287,9 @@ func remove_piece(base_id: int, piece: BaseModel.Piece) -> void:
 	var base: BaseModel = find_base(base_id)
 	if base == null:
 		return
+	if multiplayer.is_server():
+		for peer: int in NetManager.ready_clients():
+			_client_remove_piece.rpc_id(peer, base_id, piece.uid)
 	base.remove(piece)
 	_nodes.erase("%d:%d" % [base_id, piece.uid])
 	if base.pieces.is_empty():
@@ -298,3 +303,76 @@ func restore_base(base: BaseModel) -> void:
 	_next_base_id = maxi(_next_base_id, base.id + 1)
 	for piece: BaseModel.Piece in base.pieces.values():
 		spawn_piece_node(base, piece)
+
+
+# --- Replicación a los clientes (GDD §12) ---
+
+## Host: envía todas las bases a un cliente que acaba de unirse.
+func send_full_state(peer: int) -> void:
+	for base: BaseModel in bases:
+		for piece: BaseModel.Piece in base.pieces.values():
+			_client_add_piece.rpc_id(peer, base.id, base.origin, piece_to_dict(piece))
+			var node: BuildingPieceNode = piece_node(base.id, piece.uid)
+			if node != null and node.door_open:
+				_client_door.rpc_id(peer, base.id, piece.uid, true)
+
+
+static func piece_to_dict(piece: BaseModel.Piece) -> Dictionary:
+	return {"uid": piece.uid, "def": piece.definition.resource_path, "mat": piece.material.resource_path,
+			"cell": piece.cell, "side": piece.side, "hp": piece.hp}
+
+
+func _broadcast_piece(base: BaseModel, piece: BaseModel.Piece) -> void:
+	for peer: int in NetManager.ready_clients():
+		_client_add_piece.rpc_id(peer, base.id, base.origin, piece_to_dict(piece))
+
+
+## Host: la vida o el material de una pieza ha cambiado.
+func broadcast_piece_state(base_id: int, piece: BaseModel.Piece) -> void:
+	for peer: int in NetManager.ready_clients():
+		_client_piece_state.rpc_id(peer, base_id, piece.uid, piece.hp, piece.material.resource_path)
+
+
+func broadcast_door(base_id: int, uid: int, open: bool) -> void:
+	for peer: int in NetManager.ready_clients():
+		_client_door.rpc_id(peer, base_id, uid, open)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_add_piece(base_id: int, origin: Transform3D, data: Dictionary) -> void:
+	var base: BaseModel = find_base(base_id)
+	if base == null:
+		base = BaseModel.new(base_id, origin)
+		bases.append(base)
+	if base.find_uid(int(data.uid)) != null:
+		return
+	var piece: BaseModel.Piece = base.restore(load(data.def) as BuildingPieceDefinition,
+			load(data.mat) as BuildingMaterial, data.cell as Vector3i, int(data.side), float(data.hp), int(data.uid))
+	spawn_piece_node(base, piece)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_remove_piece(base_id: int, uid: int) -> void:
+	var node: BuildingPieceNode = piece_node(base_id, uid)
+	var base: BaseModel = find_base(base_id)
+	if base != null and base.find_uid(uid) != null:
+		remove_piece(base_id, base.find_uid(uid))
+	if node != null:
+		node.queue_free()
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_piece_state(base_id: int, uid: int, hp: float, material_path: String) -> void:
+	var node: BuildingPieceNode = piece_node(base_id, uid)
+	if node == null:
+		return
+	node.piece.hp = hp
+	node.piece.material = load(material_path) as BuildingMaterial
+	node.refresh_material()
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_door(base_id: int, uid: int, open: bool) -> void:
+	var node: BuildingPieceNode = piece_node(base_id, uid)
+	if node != null:
+		node.set_door_open(open)

@@ -34,6 +34,8 @@ signal reload_failed()
 ## Tolerancia de los temporizadores: evita que un residuo de coma flotante (p. ej. 0.1 - 6/60)
 ## retrase la acción un tick entero y baje la cadencia real.
 const TIMER_EPSILON: float = 0.0001
+## Distancia máxima entre el origen de un ataque y el cuerpo del atacante (validación del host).
+const MAX_ORIGIN_OFFSET_M: float = 3.0
 
 ## Proveedor de munición: objeto con count_ammo(id), take_ammo(id, n),
 ## ammo_types_for(calibre) y return_ammo(munición, n). Null = reserva infinita.
@@ -155,6 +157,9 @@ func request_switch(index: int) -> void:
 @rpc("any_peer", "call_local", "reliable")
 func _server_attack(origin: Vector3, direction: Vector3, aiming: bool) -> void:
 	if not _is_valid_request() or _cooldown_s > TIMER_EPSILON or is_reloading():
+		return
+	# El disparo tiene que salir del propio personaje (cliente honesto o no).
+	if body != null and origin.distance_to(body.global_position) > MAX_ORIGIN_OFFSET_M:
 		return
 	var weapon: WeaponDefinition = current()
 	if weapon == null:

@@ -21,7 +21,9 @@ func _physics_process(_delta: float) -> void:
 	var position: Vector3 = body.global_position
 	var moved: float = Vector2(position.x - _last_position.x, position.z - _last_position.z).length()
 	_last_position = position
-	if not body.is_on_floor() or moved > 5.0:
+	# En jugadores remotos (en el host) el suelo lo dice su dueño.
+	var grounded: bool = bool(body.call(&"is_grounded")) if body.has_method(&"is_grounded") else body.is_on_floor()
+	if not grounded or moved > 5.0:
 		return
 	_travelled_m += moved
 	if _travelled_m >= rules.step_distance_m:

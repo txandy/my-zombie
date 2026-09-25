@@ -91,3 +91,20 @@ static func survival_from_dict(survival: SurvivalComponent, data: Dictionary) ->
 	survival.body_temp_c = float(data.temp)
 	survival.stamina = float(data.stamina)
 	survival.changed.emit()
+
+
+## Contenedor completo (id, tamaño de sus rejillas y objetos), para enviarlo por red.
+static func container_to_dict(container: ItemContainer) -> Dictionary:
+	var sizes: Array = []
+	for grid: ItemGrid in container.grids:
+		sizes.append(Vector2i(grid.width, grid.height))
+	return {"id": String(container.id), "grids": sizes, "items": container_to_list(container)}
+
+
+static func container_from_dict(data: Dictionary, catalog: ItemCatalog) -> ItemContainer:
+	var sizes: Array[Vector2i] = []
+	for size: Variant in data.grids:
+		sizes.append(size as Vector2i)
+	var container := ItemContainer.new(StringName(data.id), sizes)
+	container_from_list(container, data.items, catalog)
+	return container

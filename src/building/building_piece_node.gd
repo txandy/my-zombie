@@ -123,6 +123,8 @@ func receive_structure_damage(amount: float) -> void:
 		return
 	piece.hp -= amount
 	refresh_material()
+	if manager != null and piece.hp > 0.0:
+		manager.broadcast_piece_state(base_id, piece)
 	if piece.hp <= 0.0:
 		destroyed.emit()
 		if manager != null:
@@ -140,10 +142,16 @@ func interaction_text() -> String:
 func interact(_player: Player) -> void:
 	if piece.definition.kind != K.DOOR:
 		return
-	door_open = not door_open
+	set_door_open(not door_open)
+	if manager != null:
+		manager.broadcast_door(base_id, piece.uid, door_open)
+	EventBus.sound_emitted.emit(global_position, 15.0, &"door", self)
+
+
+func set_door_open(open: bool) -> void:
+	door_open = open
 	_door_hinge.rotation.y = -PI * 0.5 if door_open else 0.0
 	for child: Node in get_children():
 		var shape := child as CollisionShape3D
 		if shape != null:
 			shape.disabled = door_open
-	EventBus.sound_emitted.emit(global_position, 15.0, &"door", self)

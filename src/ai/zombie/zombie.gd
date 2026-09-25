@@ -13,7 +13,12 @@ enum State { WANDER, INVESTIGATE, CHASE, ATTACK, DEAD }
 ## Segundos que el cadáver permanece antes de desaparecer.
 @export var corpse_time_s: float = 20.0
 
-var state: State = State.WANDER
+## Estado (lo decide el host y se replica; al morir se ve el cadáver en todos los peers).
+var state: State = State.WANDER:
+	set(value):
+		state = value
+		if value == State.DEAD and is_node_ready():
+			_show_corpse()
 var target: Node3D
 ## Punto de interés (sonido oído, objetivo de horda).
 var goal: Vector3
@@ -33,6 +38,7 @@ var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 func _ready() -> void:
 	add_to_group(&"zombie")
+	NetSync.add(self, [":position", ":rotation", ":state"], 1, true, 0.05)
 	collision_layer = PhysicsLayers.CHARACTERS
 	collision_mask = PhysicsLayers.WORLD | PhysicsLayers.CHARACTERS
 	home = global_position
@@ -112,6 +118,8 @@ func _can_see(player: Node3D, distance: float) -> bool:
 
 
 func _on_sound(position: Vector3, radius_m: float, _kind: StringName, source: Node) -> void:
+	if not multiplayer.is_server():
+		return
 	if state == State.DEAD or state == State.CHASE or state == State.ATTACK:
 		return
 	if source != null and source.is_in_group(&"zombie"):
@@ -205,6 +213,8 @@ func _face(point: Vector3, delta: float) -> void:
 
 # Al recibir un golpe o un disparo va a por quien se lo ha hecho.
 func _on_hit(_zone: BodyZones.Zone, _result: DamageResolver.HitResult, source: Node) -> void:
+	if not multiplayer.is_server():
+		return
 	var attacker := source as Node3D
 	if attacker != null and state != State.DEAD and not attacker.is_in_group(&"zombie"):
 		target = attacker
@@ -215,9 +225,6 @@ func _on_hit(_zone: BodyZones.Zone, _result: DamageResolver.HitResult, source: N
 func _on_died(_zone: BodyZones.Zone) -> void:
 	state = State.DEAD
 	velocity = Vector3.ZERO
-	collision_layer = 0
-	_visual.rotation.x = -PI * 0.5
-	_visual.position.y = 0.2
 	died.emit()
 	await get_tree().create_timer(corpse_time_s).timeout
 	queue_free()
@@ -225,3 +232,9 @@ func _on_died(_zone: BodyZones.Zone) -> void:
 
 static func _flat(v: Vector3) -> Vector3:
 	return Vector3(v.x, 0.0, v.z)
+
+
+func _show_corpse() -> void:
+	collision_layer = 0
+	_visual.rotation.x = -PI * 0.5
+	_visual.position.y = 0.2

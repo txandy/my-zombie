@@ -42,6 +42,13 @@ var _serial: int = 0
 
 func _ready() -> void:
 	EventBus.night_changed.connect(_on_night_changed)
+	# Los zombis que crea el host aparecen también en los clientes listos.
+	var spawner := MultiplayerSpawner.new()
+	spawner.name = "Spawner"
+	add_child(spawner)
+	spawner.spawn_path = spawner.get_path_to(self)
+	if zombie_scene != null:
+		spawner.add_spawnable_scene(zombie_scene.resource_path)
 
 
 func _physics_process(delta: float) -> void:

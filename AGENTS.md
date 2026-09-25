@@ -93,6 +93,12 @@ func _server_move_item(item_id: StringName, target: StringName, cell: Vector2i, 
 - **Obligatorio tener tests** para: modelo de inventario (colocación, rotación, anidado, stacks), determinismo de la generación (hash por seed), cálculo de daño y armadura, tablas de loot, validación de solicitudes de red y el modelo de puntería de la IA (convergencia del error, límites de headshot).
 - Los tests deben pasar en headless antes de dar una tarea por terminada.
 - Ejecución: `GODOT_BIN=/ruta/godot tools/run_tests.sh` (o `tools/run_tests.ps1` en Windows). Acepta `-a res://tests/ruta` para ejecutar solo una parte. La CI (`.github/workflows/tests.yml`) ejecuta lo mismo en cada PR.
+- Herramientas de verificación (también útiles antes de dar una tarea por terminada):
+  - `tools/coop_soak.tscn`: host y cliente en dos procesos juegan un día acelerado y comparan su estado (criterio de M7). La CI lo ejecuta.
+  - `tools/bench_ai.tscn`: rendimiento con 20 NPCs humanos y 50 zombis (AGENTS.md §6).
+  - `tools/bench_day.tscn`: simula un día completo en el mundo (criterio de M5).
+  - `tools/bench_worldgen.gd`: tiempo de generación y recuento de POIs, vegetación y spawns.
+  - `tools/build_item_catalog.gd`: regenera `data/items/catalog.tres` al añadir objetos.
 - No borres ni desactives tests para que la suite pase. Si un test está mal, explícalo en la respuesta.
 
 ---

@@ -19,7 +19,12 @@ var squad: Squad
 var aim_model: AimModel
 ## Si está agachado (tras cobertura baja).
 var crouched: bool = false
-var is_dead: bool = false
+## Lo decide el host y se replica: al morir, todos los peers ven el cadáver.
+var is_dead: bool = false:
+	set(value):
+		is_dead = value
+		if value and is_node_ready():
+			_show_corpse()
 ## Nivel de detalle de la IA (lo fija AIManager): 0 completo, 1 simplificado, 2 congelado.
 var lod_level: int = 0
 var corpse_container: ItemContainer
@@ -53,6 +58,7 @@ const EYE_HEIGHT_M: float = 1.6
 func _ready() -> void:
 	add_to_group(&"npc")
 	add_to_group(faction)
+	NetSync.add(self, [":position", ":rotation", ":crouched", ":is_dead"], 1, true, 0.05)
 	collision_layer = PhysicsLayers.CHARACTERS
 	collision_mask = PhysicsLayers.WORLD | PhysicsLayers.CHARACTERS
 	home_position = global_position
@@ -65,10 +71,12 @@ func _ready() -> void:
 		var rng: RandomNumberGenerator = SeedUtil.make_rng(GameState.world_seed, StringName("npc:%s" % name))
 		inventory.apply_loadout(loadout, rng)
 	_sync_equipment()
-	brain = HumanBrain.new()
-	brain.name = "Brain"
-	add_child(brain)
-	brain.setup(self)
+	# Solo el host piensa por los NPCs (en los clientes son marionetas sincronizadas).
+	if multiplayer.is_server():
+		brain = HumanBrain.new()
+		brain.name = "Brain"
+		add_child(brain)
+		brain.setup(self)
 
 
 func _physics_process(delta: float) -> void:
@@ -304,10 +312,7 @@ func _become_corpse() -> void:
 	for item: ItemInstance in inv.pockets.items():
 		inv.pockets.remove(item)
 		corpse_container.insert_anywhere(item)
-	collision_layer = PhysicsLayers.INTERACTABLES
 	crouched = false
-	_visual.rotation.x = -PI * 0.5
-	_visual.position.y = 0.2
 
 
 func interaction_text() -> String:
@@ -388,3 +393,9 @@ func from_save(data: Dictionary, catalog: ItemCatalog) -> void:
 		return
 	health.from_save(data.health)
 	ItemSerializer.inventory_from_dict(inventory, data.inventory, catalog)
+
+
+func _show_corpse() -> void:
+	collision_layer = PhysicsLayers.INTERACTABLES
+	_visual.rotation.x = -PI * 0.5
+	_visual.position.y = 0.2

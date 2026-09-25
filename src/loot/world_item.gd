@@ -9,8 +9,12 @@ const CELL_SIZE_M: float = 0.12
 var item: ItemInstance
 
 
-## Crea un WorldItem para el objeto en `position`, como hijo de `parent`.
+## Crea un WorldItem para el objeto en `position`. En el mundo va por WorldItems (se
+## replica a los clientes); sin él (escenas de pruebas) se añade a `parent`.
 static func spawn(source: ItemInstance, position: Vector3, parent: Node) -> WorldItem:
+	var root := parent.get_tree().get_first_node_in_group(&"world_items_root") as WorldItems
+	if root != null:
+		return root.drop_instance(source, position)
 	var node := WorldItem.new()
 	node.item = source
 	parent.add_child(node)
@@ -20,6 +24,9 @@ static func spawn(source: ItemInstance, position: Vector3, parent: Node) -> Worl
 
 func _ready() -> void:
 	add_to_group(&"world_item")
+	NetSync.add(self, [":position", ":rotation"], 1)
+	# Solo el host simula la física; en los clientes sigue la sincronización.
+	freeze = not multiplayer.is_server()
 	collision_layer = PhysicsLayers.INTERACTABLES
 	collision_mask = PhysicsLayers.WORLD
 	mass = maxf(item.weight_kg(), 0.1)
