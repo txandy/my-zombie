@@ -153,5 +153,6 @@ func _pick_spawn_point(players: Array[Node3D]) -> Variant:
 		var point: Vector3 = spawn_points[Ballistics.rng.randi_range(0, spawn_points.size() - 1)]
 		var distance: float = _nearest_player_distance(point, players)
 		if distance >= spawn_min_distance_m and distance <= spawn_max_distance_m:
-			return point
+			# Dispersión alrededor del punto para que no aparezcan todos en el mismo sitio.
+			return point + Vector3(Ballistics.rng.randf_range(-6, 6), 0.0, Ballistics.rng.randf_range(-6, 6))
 	return null

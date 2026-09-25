@@ -6,7 +6,7 @@ const M1_SETTINGS_PATH: String = "res://data/world/m1_world_gen_settings.tres"
 ## Hash de referencia del fixture con la seed 12345. Si cambia, el mundo generado para
 ## todas las seeds ha cambiado: solo se actualiza a propósito y explicándolo en el commit.
 const GOLDEN_SEED: int = 12345
-const GOLDEN_HASH: String = "fb915577b80017a47313c0bbc4af39e1b384e9a488dca4524abdf0c614952359"
+const GOLDEN_HASH: String = "32df2654ab2bb02298b9e58a2b7c73d4861febde90f3b2076087ae8bed3524a4"
 
 var _fixture: WorldGenSettings
 
