@@ -17,6 +17,8 @@ var temperature := PackedFloat32Array()
 var humidity := PackedFloat32Array()
 ## Fase 3: índice del bioma en WorldGenSettings.biomes.
 var biomes := PackedByteArray()
+## Fase 5: POIs colocados, en orden de colocación.
+var pois: Array[PoiPlacement] = []
 
 ## Tiempo de cada fase en ms. No forma parte del hash.
 var timings: Dictionary[StringName, int] = {}
@@ -49,4 +51,10 @@ func compute_hash() -> String:
 		length.encode_s64(0, grid.size())
 		ctx.update(length)
 		ctx.update(grid)
+	var poi_count := PackedByteArray()
+	poi_count.resize(8)
+	poi_count.encode_s64(0, pois.size())
+	ctx.update(poi_count)
+	for poi: PoiPlacement in pois:
+		ctx.update(poi.to_bytes())
 	return ctx.finish().hex_encode()

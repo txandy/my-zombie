@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PoiDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/world/poi/poi_definition.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/poi/supermarket.tscn" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"supermarket"
+display_name = "Supermercado"
+scene = ExtResource("2")
+tier = 2
+footprint_m = Vector2(42, 36)
+allowed_biomes = Array[StringName]([&"temperate_forest", &"meadow"])
+max_height_variation_m = 4.0
+min_distance_m = 120.0
+max_count = 1
+flatten_margin_m = 10.0

@@ -32,6 +32,13 @@ extends Resource
 @export_group("Biomas")
 @export var biomes: Array[BiomeDefinition] = []
 
+@export_group("POIs")
+@export var poi_definitions: Array[PoiDefinition] = []
+## Intentos de colocación por cada instancia pedida (max_count).
+@export var poi_attempts_per_instance: int = 0
+## Altura mínima del terreno bajo la huella (evita costa y agua).
+@export var poi_min_height: float = 0.0
+
 
 ## Número de muestras por lado del heightmap.
 func resolution() -> int:

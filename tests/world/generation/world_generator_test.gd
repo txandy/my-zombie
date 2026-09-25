@@ -6,7 +6,7 @@ const M1_SETTINGS_PATH: String = "res://data/world/m1_world_gen_settings.tres"
 ## Hash de referencia del fixture con la seed 12345. Si cambia, el mundo generado para
 ## todas las seeds ha cambiado: solo se actualiza a propósito y explicándolo en el commit.
 const GOLDEN_SEED: int = 12345
-const GOLDEN_HASH: String = "ad098b3d3c3dd72b7acac8e47a5442f48374b24e9c84795203c3a1e629fb4c75"
+const GOLDEN_HASH: String = "69664b08ffe47f5d39de39468a41aa8bc455c3be4d4d59fbce84586815df61be"
 
 var _fixture: WorldGenSettings
 
@@ -19,7 +19,7 @@ func test_phase_order_is_fixed() -> void:
 	var names: Array[StringName] = []
 	for phase: WorldGenPhase in WorldGenerator.create_phases():
 		names.append(phase.phase_name())
-	assert_array(names).is_equal([&"heightmap", &"climate", &"biomes"])
+	assert_array(names).is_equal([&"heightmap", &"climate", &"biomes", &"poi"])
 
 
 func test_same_seed_same_hash() -> void:

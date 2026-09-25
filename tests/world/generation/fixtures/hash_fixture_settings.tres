@@ -1,14 +1,18 @@
-[gd_resource type="Resource" script_class="WorldGenSettings" load_steps=5 format=3]
+[gd_resource type="Resource" script_class="WorldGenSettings" load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://src/world/generation/world_gen_settings.gd" id="1"]
 [ext_resource type="Resource" path="res://data/biomes/temperate_forest.tres" id="2"]
 [ext_resource type="Resource" path="res://data/biomes/meadow.tres" id="3"]
 [ext_resource type="Script" path="res://src/world/biomes/biome_definition.gd" id="4"]
+[ext_resource type="Script" path="res://src/world/poi/poi_definition.gd" id="5"]
+[ext_resource type="Resource" path="res://data/poi/house.tres" id="6"]
+[ext_resource type="Resource" path="res://data/poi/gas_station.tres" id="7"]
+[ext_resource type="Resource" path="res://data/poi/supermarket.tres" id="8"]
 
 [resource]
 script = ExtResource("1")
-world_size_m = 256
-cell_size_m = 2.0
+world_size_m = 512
+cell_size_m = 4.0
 base_height = 5.0
 continental_frequency = 0.0015
 continental_amplitude = 40.0
@@ -23,3 +27,6 @@ temperature_frequency = 0.0012
 humidity_frequency = 0.0015
 temperature_lapse_per_m = 0.003
 biomes = Array[ExtResource("4")]([ExtResource("2"), ExtResource("3")])
+poi_definitions = Array[ExtResource("5")]([ExtResource("6"), ExtResource("7"), ExtResource("8")])
+poi_attempts_per_instance = 30
+poi_min_height = 2.0

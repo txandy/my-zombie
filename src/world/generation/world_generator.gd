@@ -10,6 +10,7 @@ static func create_phases() -> Array[WorldGenPhase]:
 		HeightmapPhase.new(),
 		ClimatePhase.new(),
 		BiomePhase.new(),
+		PoiPhase.new(),
 	]
 
 
