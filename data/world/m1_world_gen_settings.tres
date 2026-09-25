@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="WorldGenSettings" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/world/generation/world_gen_settings.gd" id="1"]
+[ext_resource type="Resource" path="res://data/biomes/temperate_forest.tres" id="2"]
+[ext_resource type="Resource" path="res://data/biomes/meadow.tres" id="3"]
+[ext_resource type="Script" path="res://src/world/biomes/biome_definition.gd" id="4"]
+
+[resource]
+script = ExtResource("1")
+world_size_m = 1024
+cell_size_m = 1.0
+base_height = 5.0
+continental_frequency = 0.0015
+continental_amplitude = 40.0
+mountain_frequency = 0.004
+mountain_amplitude = 60.0
+mountain_threshold = 0.6
+detail_frequency = 0.03
+detail_amplitude = 1.5
+coast_width_m = 120.0
+sea_floor_height = -15.0
+temperature_frequency = 0.0012
+humidity_frequency = 0.0015
+temperature_lapse_per_m = 0.003
+biomes = Array[ExtResource("4")]([ExtResource("2"), ExtResource("3")])
