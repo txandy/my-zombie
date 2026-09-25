@@ -48,6 +48,12 @@ extends Resource
 ## Pausa entre disparos con armas semiautomáticas.
 @export var semi_interval_s: float = 0.0
 
+@export_group("Movimiento")
+@export var walk_speed: float = 0.0
+@export var run_speed: float = 0.0
+## Giro máximo (grados por segundo).
+@export var turn_speed_deg: float = 0.0
+
 @export_group("Táctica")
 ## Fracción de vida del tórax por debajo de la cual se retira a curarse.
 @export_range(0.0, 1.0) var retreat_health_fraction: float = 0.0

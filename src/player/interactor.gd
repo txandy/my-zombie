@@ -25,7 +25,9 @@ func _find_target() -> Node3D:
 			PhysicsLayers.WORLD | PhysicsLayers.INTERACTABLES, [_player.get_rid()])
 	var hit: Dictionary = _player.get_world_3d().direct_space_state.intersect_ray(query)
 	var collider := hit.get("collider") as Node3D
-	return collider if collider != null and collider.has_method(&"interact") else null
+	if collider == null or not collider.has_method(&"interact"):
+		return null
+	return collider if String(collider.call(&"interaction_text")) != "" else null
 
 
 func request_interact() -> void:

@@ -1,0 +1,67 @@
+[gd_resource type="Resource" script_class="LootTable" load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://src/loot/loot_table.gd" id="1"]
+[ext_resource type="Script" path="res://src/loot/loot_entry.gd" id="2"]
+[ext_resource type="Resource" path="res://data/items/bandage.tres" id="10"]
+[ext_resource type="Resource" path="res://data/items/tourniquet.tres" id="11"]
+[ext_resource type="Resource" path="res://data/items/painkillers.tres" id="12"]
+[ext_resource type="Resource" path="res://data/items/scrap_metal.tres" id="13"]
+[ext_resource type="Resource" path="res://data/items/canned_food.tres" id="14"]
+[ext_resource type="Resource" path="res://data/items/electronics.tres" id="15"]
+
+[sub_resource type="Resource" id="E0"]
+script = ExtResource("2")
+item = ExtResource("10")
+weight = 4
+min_quantity = 1
+max_quantity = 2
+min_tier = 1
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("2")
+item = ExtResource("11")
+weight = 2
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("2")
+item = ExtResource("12")
+weight = 2
+min_quantity = 1
+max_quantity = 2
+min_tier = 1
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("2")
+item = ExtResource("13")
+weight = 2
+min_quantity = 1
+max_quantity = 3
+min_tier = 1
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("2")
+item = ExtResource("14")
+weight = 1
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[sub_resource type="Resource" id="E5"]
+script = ExtResource("2")
+item = ExtResource("15")
+weight = 1
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[resource]
+script = ExtResource("1")
+id = &"bandit_storage"
+entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3"), SubResource("E4"), SubResource("E5")])
+min_rolls = 1
+max_rolls = 3
+extra_rolls_per_tier = 0
+empty_chance = 0.0

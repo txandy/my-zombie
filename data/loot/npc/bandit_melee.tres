@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="LootTable" load_steps=5 format=3]
+
+[ext_resource type="Script" path="res://src/loot/loot_table.gd" id="1"]
+[ext_resource type="Script" path="res://src/loot/loot_entry.gd" id="2"]
+[ext_resource type="Resource" path="res://data/items/knife.tres" id="10"]
+
+[sub_resource type="Resource" id="E0"]
+script = ExtResource("2")
+item = ExtResource("10")
+weight = 1
+min_quantity = 1
+max_quantity = 1
+min_tier = 1
+
+[resource]
+script = ExtResource("1")
+id = &"bandit_melee"
+entries = Array[ExtResource("2")]([SubResource("E0")])
+min_rolls = 1
+max_rolls = 1
+extra_rolls_per_tier = 0
+empty_chance = 0.2

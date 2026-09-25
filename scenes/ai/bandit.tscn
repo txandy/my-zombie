@@ -1,0 +1,155 @@
+[gd_scene load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://src/ai/human/human_npc.gd" id="1_npc"]
+[ext_resource type="Resource" path="res://data/ai/bandit_profile.tres" id="2_profile"]
+[ext_resource type="Resource" path="res://data/ai/bandit_loadout.tres" id="3_loadout"]
+[ext_resource type="Script" path="res://src/combat/health/health_component.gd" id="4_health"]
+[ext_resource type="Resource" path="res://data/combat/human_health_profile.tres" id="5_health_profile"]
+[ext_resource type="Script" path="res://src/combat/armor/armor_component.gd" id="6_armor"]
+[ext_resource type="PackedScene" path="res://scenes/combat/humanoid_hitboxes.tscn" id="7_hitboxes"]
+[ext_resource type="Script" path="res://src/combat/damage/damage_receiver.gd" id="8_receiver"]
+[ext_resource type="Resource" path="res://data/combat/combat_rules.tres" id="9_rules"]
+[ext_resource type="Script" path="res://src/combat/weapons/weapon_holder.gd" id="10_holder"]
+[ext_resource type="Script" path="res://src/inventory/inventory_component.gd" id="11_inventory"]
+[ext_resource type="Resource" path="res://data/inventory/human_inventory_profile.tres" id="12_inv_profile"]
+[ext_resource type="Script" path="res://src/ai/common/perception.gd" id="13_perception"]
+[ext_resource type="Resource" path="res://data/ai/perception_rules.tres" id="14_perception_rules"]
+[ext_resource type="Script" path="res://src/ai/common/footstep_emitter.gd" id="15_footsteps"]
+
+[sub_resource type="CapsuleShape3D" id="Body"]
+radius = 0.33
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_Head"]
+albedo_color = Color(0.75,0.6,0.5, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_Head"]
+material = SubResource("Mat_Head")
+size = Vector3(0.22, 0.25, 0.24)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Thorax"]
+albedo_color = Color(0.45,0.22,0.18, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_Thorax"]
+material = SubResource("Mat_Thorax")
+size = Vector3(0.42, 0.4, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Stomach"]
+albedo_color = Color(0.4,0.2,0.16, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_Stomach"]
+material = SubResource("Mat_Stomach")
+size = Vector3(0.36, 0.26, 0.22)
+
+[sub_resource type="StandardMaterial3D" id="Mat_LeftArm"]
+albedo_color = Color(0.45,0.22,0.18, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_LeftArm"]
+material = SubResource("Mat_LeftArm")
+size = Vector3(0.12, 0.62, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="Mat_RightArm"]
+albedo_color = Color(0.45,0.22,0.18, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_RightArm"]
+material = SubResource("Mat_RightArm")
+size = Vector3(0.12, 0.62, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="Mat_LeftLeg"]
+albedo_color = Color(0.22,0.22,0.25, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_LeftLeg"]
+material = SubResource("Mat_LeftLeg")
+size = Vector3(0.15, 0.84, 0.15)
+
+[sub_resource type="StandardMaterial3D" id="Mat_RightLeg"]
+albedo_color = Color(0.22,0.22,0.25, 1)
+
+[sub_resource type="BoxMesh" id="Mesh_RightLeg"]
+material = SubResource("Mat_RightLeg")
+size = Vector3(0.15, 0.84, 0.15)
+
+[node name="Bandit" type="CharacterBody3D"]
+script = ExtResource("1_npc")
+profile = ExtResource("2_profile")
+loadout = ExtResource("3_loadout")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Body")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="Head" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.625, 0)
+mesh = SubResource("Mesh_Head")
+
+[node name="Thorax" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.3, 0)
+mesh = SubResource("Mesh_Thorax")
+
+[node name="Stomach" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.97, 0)
+mesh = SubResource("Mesh_Stomach")
+
+[node name="LeftArm" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.29, 1.2, 0)
+mesh = SubResource("Mesh_LeftArm")
+
+[node name="RightArm" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.29, 1.2, 0)
+mesh = SubResource("Mesh_RightArm")
+
+[node name="LeftLeg" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.42, 0)
+mesh = SubResource("Mesh_LeftLeg")
+
+[node name="RightLeg" type="MeshInstance3D" parent="Visual"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.1, 0.42, 0)
+mesh = SubResource("Mesh_RightLeg")
+
+[node name="Eye" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -0.1)
+
+[node name="Health" type="Node" parent="."]
+script = ExtResource("4_health")
+profile = ExtResource("5_health_profile")
+
+[node name="Armor" type="Node" parent="."]
+script = ExtResource("6_armor")
+
+[node name="Hitboxes" parent="." instance=ExtResource("7_hitboxes")]
+
+[node name="DamageReceiver" type="Node" parent="." node_paths=PackedStringArray("health", "armor", "hitboxes_root")]
+script = ExtResource("8_receiver")
+health = NodePath("../Health")
+armor = NodePath("../Armor")
+hitboxes_root = NodePath("../Hitboxes")
+rules = ExtResource("9_rules")
+
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("11_inventory")
+profile = ExtResource("12_inv_profile")
+
+[node name="WeaponHolder" type="Node" parent="." node_paths=PackedStringArray("health", "damage_receiver", "body")]
+script = ExtResource("10_holder")
+health = NodePath("../Health")
+damage_receiver = NodePath("../DamageReceiver")
+body = NodePath("..")
+
+[node name="Perception" type="Node" parent="." node_paths=PackedStringArray("body", "eye")]
+script = ExtResource("13_perception")
+profile = ExtResource("2_profile")
+rules = ExtResource("14_perception_rules")
+body = NodePath("..")
+eye = NodePath("../Eye")
+
+[node name="Footsteps" type="Node" parent="." node_paths=PackedStringArray("body")]
+script = ExtResource("15_footsteps")
+rules = ExtResource("14_perception_rules")
+body = NodePath("..")
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.7
+target_desired_distance = 0.5
+radius = 0.35

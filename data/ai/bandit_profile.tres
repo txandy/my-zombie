@@ -31,3 +31,6 @@ aggression = 0.6
 peek_time_s = 2.5
 cover_time_s = 1.5
 search_time_s = 20.0
+walk_speed = 1.8
+run_speed = 4.6
+turn_speed_deg = 300.0

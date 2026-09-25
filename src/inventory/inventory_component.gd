@@ -321,3 +321,32 @@ func apply_kit(kit: StartingKit) -> void:
 	for item: ItemInstance in to_store:
 		if inventory.store(item) > 0:
 			item_dropped.emit(item)
+
+
+## Host: genera el equipo de un NPC con sus tablas de loot (GDD §8). Las armas vienen
+## cargadas y se añaden cargadores de repuesto de su munición.
+func apply_loadout(loadout: NPCLoadout, rng: RandomNumberGenerator, tier: int = 1, biome_id: StringName = &"") -> void:
+	if not multiplayer.is_server() or loadout == null:
+		return
+	var slots: Dictionary[Inventory.Slot, LootTable] = {
+		Inventory.Slot.TORSO: loadout.torso, Inventory.Slot.BACKPACK: loadout.backpack,
+		Inventory.Slot.HELMET: loadout.helmet, Inventory.Slot.PRIMARY: loadout.primary,
+		Inventory.Slot.PISTOL: loadout.pistol, Inventory.Slot.MELEE: loadout.melee,
+	}
+	# Primero rig y mochila: así el resto tiene dónde guardarse.
+	for slot: Inventory.Slot in slots:
+		if slots[slot] == null:
+			continue
+		for item: ItemInstance in LootRoller.roll(slots[slot], tier, biome_id, rng):
+			if item.definition.weapon != null:
+				WeaponHolder.load_full(item)
+			if not inventory.equip(item, slot):
+				inventory.store(item)
+	for weapon_slot: Inventory.Slot in [Inventory.Slot.PRIMARY, Inventory.Slot.PISTOL]:
+		var weapon_item: ItemInstance = inventory.item_in(weapon_slot)
+		if weapon_item != null and weapon_item.definition.weapon.kind == WeaponDefinition.Kind.FIREARM:
+			var weapon: WeaponDefinition = weapon_item.definition.weapon
+			return_ammo(weapon.default_ammo, weapon.magazine_size * loadout.spare_magazines)
+	if loadout.storage != null:
+		for item: ItemInstance in LootRoller.roll(loadout.storage, tier, biome_id, rng):
+			inventory.store(item)
