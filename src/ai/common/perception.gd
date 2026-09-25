@@ -41,7 +41,7 @@ var _vision_timer: float = 0.0
 func _ready() -> void:
 	EventBus.sound_emitted.connect(_on_sound)
 	Ballistics.projectile_fired.connect(_on_projectile_fired)
-	_vision_timer = randf() * rules.vision_interval_s
+	_vision_timer = Ballistics.rng.randf() * rules.vision_interval_s
 
 
 func _physics_process(delta: float) -> void:

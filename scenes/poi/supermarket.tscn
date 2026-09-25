@@ -1,5 +1,7 @@
 [gd_scene format=3]
 
+[ext_resource type="Script" path="res://src/ai/common/cover_point.gd" id="cover_point"]
+
 [ext_resource type="PackedScene" path="res://scenes/loot/medical_cabinet.tscn" id="loot_medical_cabinet"]
 
 [ext_resource type="PackedScene" path="res://scenes/loot/locker.tscn" id="loot_locker"]
@@ -77,9 +79,11 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 0, 15)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -14)
 
 [node name="CarCoverA" type="Marker3D" parent="Markers/Cover"]
+script = ExtResource("cover_point")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -12.8)
 
 [node name="CarCoverB" type="Marker3D" parent="Markers/Cover"]
+script = ExtResource("cover_point")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -14.8)
 
 [node name="Office" parent="Markers/Loot" instance=ExtResource("loot_medical_cabinet")]

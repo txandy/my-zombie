@@ -23,6 +23,7 @@ var is_dead: bool = false
 ## Nivel de detalle de la IA (lo fija AIManager): 0 completo, 1 simplificado, 2 congelado.
 var lod_level: int = 0
 var corpse_container: ItemContainer
+var brain: HumanBrain
 
 var _move_target: Vector3
 var _moving: bool = false
@@ -34,6 +35,9 @@ var _next_shot_s: float = 0.0
 var _time_s: float = 0.0
 var _aim_zone: BodyZones.Zone = BodyZones.Zone.THORAX
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
+var _brain_accumulator: float = 0.0
+
+const EYE_HEIGHT_M: float = 1.6
 
 @onready var health: HealthComponent = $Health
 @onready var armor: ArmorComponent = $Armor
@@ -61,6 +65,10 @@ func _ready() -> void:
 		var rng: RandomNumberGenerator = SeedUtil.make_rng(GameState.world_seed, StringName("npc:%s" % name))
 		inventory.apply_loadout(loadout, rng)
 	_sync_equipment()
+	brain = HumanBrain.new()
+	brain.name = "Brain"
+	add_child(brain)
+	brain.setup(self)
 
 
 func _physics_process(delta: float) -> void:
@@ -73,6 +81,9 @@ func _physics_process(delta: float) -> void:
 	aim_model.update(delta, target != null and perception.is_target_visible(target))
 	_hitboxes.scale.y = 0.65 if crouched else 1.0
 	_visual.scale.y = _hitboxes.scale.y
+	# Los ojos bajan al agacharse: escondido tras una cobertura baja no ve (ni es visto).
+	eye.position.y = EYE_HEIGHT_M * _hitboxes.scale.y
+	_brain_tick(delta)
 
 
 # --- Movimiento ---
@@ -132,6 +143,10 @@ func _next_path_point() -> Vector3:
 func look_at_point(point: Vector3) -> void:
 	_look_target = point
 	_has_look_target = true
+
+
+func clear_look_target() -> void:
+	_has_look_target = false
 
 
 func _update_facing(delta: float) -> void:
@@ -273,6 +288,7 @@ func _sync_equipment() -> void:
 func _on_died(_zone: BodyZones.Zone) -> void:
 	is_dead = true
 	stop()
+	brain.stop()
 	_become_corpse()
 	died.emit()
 
@@ -305,3 +321,40 @@ func interact(player: Player) -> void:
 
 static func _flat_distance(a: Vector3, b: Vector3) -> float:
 	return Vector2(a.x - b.x, a.z - b.z).length()
+
+
+## Fuego de supresión a un punto (última posición conocida) aunque no vea al objetivo:
+## más disperso y a ráfagas cortas. Lo usa el miembro de la escuadra que suprime.
+func suppress_fire(point: Vector3) -> bool:
+	look_at_point(point)
+	var weapon: WeaponDefinition = weapons.current()
+	if weapon == null or weapon.kind != WeaponDefinition.Kind.FIREARM or _time_s < _next_shot_s:
+		return false
+	if facing_error_deg(point) > 12.0 or not aim_model.can_fire():
+		return false
+	if weapons.current_rounds() <= 0:
+		weapons.request_reload()
+		return false
+	var spread: float = deg_to_rad(profile.base_spread_deg * 1.5)
+	weapons.request_attack(eye.global_position, WeaponHolder.spread_direction(point - eye.global_position, spread, Ballistics.rng), false)
+	_next_shot_s = _time_s + profile.burst_pause_s * 1.5
+	return true
+
+
+## True si no le queda ninguna medicina útil para su estado actual.
+func used_all_medicine() -> bool:
+	for container: ItemContainer in inventory.inventory.storage():
+		for item: ItemInstance in container.items():
+			var effect := item.definition.use_effect as MedicalEffect
+			if effect != null and effect.can_apply(self):
+				return false
+	return true
+
+
+# LOD 0: el cerebro piensa cada tick. LOD 1 (lejos): 4 veces por segundo.
+func _brain_tick(delta: float) -> void:
+	_brain_accumulator += delta
+	var interval: float = 0.0 if lod_level == 0 else 0.25
+	if _brain_accumulator >= interval:
+		brain.update(_brain_accumulator)
+		_brain_accumulator = 0.0

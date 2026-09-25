@@ -114,6 +114,9 @@ func _build_vegetation(data: WorldData, settings: WorldGenSettings) -> void:
 	var root := Node3D.new()
 	root.name = "Vegetation"
 	add_child(root)
+	var registry := CoverRegistry.new()
+	registry.name = "CoverRegistry"
+	add_child(registry)
 	for l: int in data.vegetation.size():
 		var layer: VegetationLayer = settings.vegetation_layers[l]
 		var chunks: Dictionary[Vector2i, PackedInt32Array] = _group_by_chunk(data.vegetation[l])
@@ -121,6 +124,7 @@ func _build_vegetation(data: WorldData, settings: WorldGenSettings) -> void:
 			root.add_child(_make_multimesh(layer, data.vegetation[l], chunks[chunk], chunk))
 			if layer.collision_radius > 0.0:
 				_add_collision(layer, data.vegetation[l], chunks[chunk])
+				_register_cover(registry, layer, data.vegetation[l], chunks[chunk])
 
 
 # Índices de instancia (en floats) agrupados por chunk.
@@ -170,3 +174,12 @@ func _add_collision(layer: VegetationLayer, instances: PackedFloat32Array, indic
 		var origin := Vector3(instances[i], instances[i + 1] + layer.collision_height * 0.5 * scale, instances[i + 2])
 		PhysicsServer3D.body_add_shape(body, shape.get_rid(), Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale), origin))
 	_physics_bodies.append(body)
+
+
+# Los obstáculos con colisión (troncos, rocas) sirven de cobertura a la IA.
+func _register_cover(registry: CoverRegistry, layer: VegetationLayer, instances: PackedFloat32Array,
+		indices: PackedInt32Array) -> void:
+	for i: int in indices:
+		var scale: float = instances[i + 4]
+		registry.add_obstacle(Vector3(instances[i], instances[i + 1], instances[i + 2]),
+				layer.collision_radius * scale, layer.collision_height * scale)
