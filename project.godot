@@ -98,4 +98,4 @@ rendering_device/driver.windows="d3d12"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg")
+enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg", "res://addons/terrain_3d/plugin.cfg")
