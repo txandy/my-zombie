@@ -20,6 +20,9 @@ extends Resource
 @export var max_gradient: float = 0.0
 ## Distancia libre alrededor de la huella de los POIs.
 @export var poi_clearance_m: float = 0.0
+## Radio reservado alrededor de la instancia frente a otras con holgura, de cualquier capa.
+## Garantiza pasillos transitables entre árboles y rocas. 0 = no reserva ni se comprueba.
+@export var clearance_radius_m: float = 0.0
 
 @export_group("Instancia")
 @export var min_scale: float = 1.0
@@ -28,6 +31,6 @@ extends Resource
 @export var visibility_range_m: float = 0.0
 
 @export_group("Colisión")
-## Radio del cilindro de colisión con escala 1. 0 = sin colisión (hierba, arbustos).
+## Cilindro de colisión con escala 1 (se escala con cada instancia). 0 = sin colisión (arbustos).
 @export var collision_radius: float = 0.0
 @export var collision_height: float = 0.0

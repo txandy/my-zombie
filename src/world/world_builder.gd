@@ -137,7 +137,8 @@ func _make_multimesh(layer: VegetationLayer, instances: PackedFloat32Array,
 	return node
 
 
-# Un cuerpo estático por chunk con un cilindro por instancia (sin nodos, directo al servidor).
+# Un cuerpo estático por chunk con un cilindro por instancia, escalado como la instancia
+# (escala uniforme) y sin nodos, directo al servidor de física.
 func _add_collision(layer: VegetationLayer, instances: PackedFloat32Array, indices: PackedInt32Array) -> void:
 	var shape := CylinderShape3D.new()
 	shape.radius = layer.collision_radius
@@ -147,6 +148,7 @@ func _add_collision(layer: VegetationLayer, instances: PackedFloat32Array, indic
 	PhysicsServer3D.body_set_mode(body, PhysicsServer3D.BODY_MODE_STATIC)
 	PhysicsServer3D.body_set_space(body, get_world_3d().space)
 	for i: int in indices:
-		var origin := Vector3(instances[i], instances[i + 1] + layer.collision_height * 0.5, instances[i + 2])
-		PhysicsServer3D.body_add_shape(body, shape.get_rid(), Transform3D(Basis.IDENTITY, origin))
+		var scale: float = instances[i + 4]
+		var origin := Vector3(instances[i], instances[i + 1] + layer.collision_height * 0.5 * scale, instances[i + 2])
+		PhysicsServer3D.body_add_shape(body, shape.get_rid(), Transform3D(Basis.IDENTITY.scaled(Vector3.ONE * scale), origin))
 	_physics_bodies.append(body)

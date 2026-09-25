@@ -82,3 +82,43 @@ func _count_cells(biome_id: StringName) -> int:
 		if _settings.biomes[b].id == biome_id:
 			count += 1
 	return count
+
+
+## Hueco libre mínimo (m) entre dos obstáculos con colisión (troncos, rocas), ya escalados.
+## El jugador mide 0.7 m de ancho: 2 m deja pasillos cómodos incluso agachado o tumbado.
+const MIN_WALKABLE_GAP_M: float = 2.0
+
+
+func test_forest_is_walkable() -> void:
+	# Obstáculos con colisión: [x, z, radio escalado], agrupados en celdas de 8 m.
+	var grid: Dictionary[Vector2i, PackedFloat32Array] = {}
+	for l: int in _data.vegetation.size():
+		var layer_def: VegetationLayer = _settings.vegetation_layers[l]
+		if layer_def.collision_radius <= 0.0:
+			continue
+		var instances: PackedFloat32Array = _data.vegetation[l]
+		for i: int in range(0, instances.size(), STRIDE):
+			var key := Vector2i(floori(instances[i] / 8.0), floori(instances[i + 2] / 8.0))
+			if not grid.has(key):
+				grid[key] = PackedFloat32Array()
+			grid[key].append_array(PackedFloat32Array([instances[i], instances[i + 2],
+					layer_def.collision_radius * instances[i + 4]]))
+	var min_gap: float = INF
+	for key: Vector2i in grid:
+		var own: PackedFloat32Array = grid[key]
+		for dz: int in range(-1, 2):
+			for dx: int in range(-1, 2):
+				var other: PackedFloat32Array = grid.get(key + Vector2i(dx, dz), PackedFloat32Array())
+				min_gap = minf(min_gap, _min_gap_between(own, other))
+	assert_float(min_gap).is_greater_equal(MIN_WALKABLE_GAP_M)
+
+
+func _min_gap_between(a: PackedFloat32Array, b: PackedFloat32Array) -> float:
+	var best: float = INF
+	for i: int in range(0, a.size(), 3):
+		for j: int in range(0, b.size(), 3):
+			if a[i] == b[j] and a[i + 1] == b[j + 1]:
+				continue
+			var d: float = Vector2(a[i], a[i + 1]).distance_to(Vector2(b[j], b[j + 1]))
+			best = minf(best, d - a[i + 2] - b[j + 2])
+	return best
