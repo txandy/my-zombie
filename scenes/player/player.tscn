@@ -1,0 +1,39 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
+[ext_resource type="Resource" path="res://data/player/default_movement_profile.tres" id="2_profile"]
+[ext_resource type="Script" path="res://src/player/player_input.gd" id="3_input"]
+[ext_resource type="Script" path="res://src/player/posture_component.gd" id="4_posture"]
+[ext_resource type="Script" path="res://src/player/movement_component.gd" id="5_movement"]
+[ext_resource type="Script" path="res://src/player/camera_rig.gd" id="6_camera_rig"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
+resource_local_to_scene = true
+radius = 0.35
+height = 1.8
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1_player")
+movement_profile = ExtResource("2_profile")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("CapsuleShape3D_body")
+
+[node name="PlayerInput" type="Node" parent="."]
+script = ExtResource("3_input")
+
+[node name="Posture" type="Node" parent="."]
+script = ExtResource("4_posture")
+
+[node name="Movement" type="Node" parent="."]
+script = ExtResource("5_movement")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
+script = ExtResource("6_camera_rig")
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+current = true
+fov = 80.0
+near = 0.05

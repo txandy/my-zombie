@@ -1,0 +1,114 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://src/world/test_level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_material"]
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_material")
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+albedo_color = Color(0.42, 0.44, 0.4, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_props"]
+albedo_color = Color(0.72, 0.55, 0.35, 1)
+
+[node name="TestLevel" type="Node3D"]
+script = ExtResource("1_level")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 20, 0)
+shadow_enabled = true
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(80, 1, 80)
+material = SubResource("Mat_floor")
+
+[node name="Ramps" type="Node3D" parent="."]
+
+[node name="Ramp20" type="CSGBox3D" parent="Ramps"]
+transform = Transform3D(1, 0, 0, 0, 0.9397, -0.342, 0, 0.342, 0.9397, 0, 1.6, -15)
+use_collision = true
+size = Vector3(4, 0.3, 10)
+material = SubResource("Mat_props")
+
+[node name="Ramp50Unwalkable" type="CSGBox3D" parent="Ramps"]
+transform = Transform3D(1, 0, 0, 0, 0.6428, -0.766, 0, 0.766, 0.6428, 6, 2.2, -15)
+use_collision = true
+size = Vector3(4, 0.3, 6)
+material = SubResource("Mat_props")
+
+[node name="Boxes" type="Node3D" parent="."]
+
+[node name="Box03" type="CSGBox3D" parent="Boxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.15, -2)
+use_collision = true
+size = Vector3(2, 0.3, 2)
+material = SubResource("Mat_props")
+
+[node name="Box06" type="CSGBox3D" parent="Boxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.3, -5)
+use_collision = true
+size = Vector3(2, 0.6, 2)
+material = SubResource("Mat_props")
+
+[node name="Box10" type="CSGBox3D" parent="Boxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.5, -8)
+use_collision = true
+size = Vector3(2, 1, 2)
+material = SubResource("Mat_props")
+
+[node name="Box15" type="CSGBox3D" parent="Boxes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.75, -11)
+use_collision = true
+size = Vector3(2, 1.5, 2)
+material = SubResource("Mat_props")
+
+[node name="LeanWall" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 1.5, -6)
+use_collision = true
+size = Vector3(0.4, 3, 4)
+material = SubResource("Mat_props")
+
+[node name="CrouchTunnel" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 0, -4)
+use_collision = true
+
+[node name="Outer" type="CSGBox3D" parent="CrouchTunnel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+size = Vector3(2.6, 2, 8)
+material = SubResource("Mat_props")
+
+[node name="Hole" type="CSGBox3D" parent="CrouchTunnel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, 0)
+operation = 2
+size = Vector3(1.6, 1.4, 8.2)
+
+[node name="ProneTunnel" type="CSGCombiner3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -17, 0, -4)
+use_collision = true
+
+[node name="Outer" type="CSGBox3D" parent="ProneTunnel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+size = Vector3(2.6, 1.5, 8)
+material = SubResource("Mat_props")
+
+[node name="Hole" type="CSGBox3D" parent="ProneTunnel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+operation = 2
+size = Vector3(1.6, 0.9, 8.2)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5)
