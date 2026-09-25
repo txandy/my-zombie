@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldGenSettings" load_steps=9 format=3]
+[gd_resource type="Resource" script_class="WorldGenSettings" load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://src/world/generation/world_gen_settings.gd" id="1"]
 [ext_resource type="Resource" path="res://data/biomes/temperate_forest.tres" id="2"]
@@ -8,6 +8,11 @@
 [ext_resource type="Resource" path="res://data/poi/house.tres" id="6"]
 [ext_resource type="Resource" path="res://data/poi/gas_station.tres" id="7"]
 [ext_resource type="Resource" path="res://data/poi/supermarket.tres" id="8"]
+[ext_resource type="Script" path="res://src/world/generation/vegetation_layer.gd" id="9"]
+[ext_resource type="Resource" path="res://data/vegetation/pine.tres" id="10"]
+[ext_resource type="Resource" path="res://data/vegetation/broadleaf.tres" id="11"]
+[ext_resource type="Resource" path="res://data/vegetation/bush.tres" id="12"]
+[ext_resource type="Resource" path="res://data/vegetation/rock.tres" id="13"]
 
 [resource]
 script = ExtResource("1")
@@ -30,3 +35,4 @@ biomes = Array[ExtResource("4")]([ExtResource("2"), ExtResource("3")])
 poi_definitions = Array[ExtResource("5")]([ExtResource("6"), ExtResource("7"), ExtResource("8")])
 poi_attempts_per_instance = 30
 poi_min_height = 2.0
+vegetation_layers = Array[ExtResource("9")]([ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13")])

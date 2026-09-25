@@ -19,6 +19,8 @@ var humidity := PackedFloat32Array()
 var biomes := PackedByteArray()
 ## Fase 5: POIs colocados, en orden de colocación.
 var pois: Array[PoiPlacement] = []
+## Fase 8: una lista de instancias por capa de vegetación (VegetationPhase.STRIDE floats cada una).
+var vegetation: Array[PackedFloat32Array] = []
 
 ## Tiempo de cada fase en ms. No forma parte del hash.
 var timings: Dictionary[StringName, int] = {}
@@ -43,18 +45,26 @@ func compute_hash() -> String:
 	header.encode_s64(8, resolution)
 	header.encode_double(16, cell_size_m)
 	ctx.update(header)
+	# Longitud antes de cada bloque para que dos bloques no puedan "desplazarse" entre sí.
 	for grid: PackedByteArray in [heights.to_byte_array(), temperature.to_byte_array(),
 			humidity.to_byte_array(), biomes]:
-		# Longitud antes de cada bloque para que dos rejillas no puedan "desplazarse" entre sí.
-		var length := PackedByteArray()
-		length.resize(8)
-		length.encode_s64(0, grid.size())
-		ctx.update(length)
-		ctx.update(grid)
-	var poi_count := PackedByteArray()
-	poi_count.resize(8)
-	poi_count.encode_s64(0, pois.size())
-	ctx.update(poi_count)
+		_update_with_length(ctx, grid)
+	_update_count(ctx, pois.size())
 	for poi: PoiPlacement in pois:
 		ctx.update(poi.to_bytes())
+	_update_count(ctx, vegetation.size())
+	for layer: PackedFloat32Array in vegetation:
+		_update_with_length(ctx, layer.to_byte_array())
 	return ctx.finish().hex_encode()
+
+
+static func _update_count(ctx: HashingContext, count: int) -> void:
+	var bytes := PackedByteArray()
+	bytes.resize(8)
+	bytes.encode_s64(0, count)
+	ctx.update(bytes)
+
+
+static func _update_with_length(ctx: HashingContext, block: PackedByteArray) -> void:
+	_update_count(ctx, block.size())
+	ctx.update(block)

@@ -39,6 +39,10 @@ extends Resource
 ## Altura mínima del terreno bajo la huella (evita costa y agua).
 @export var poi_min_height: float = 0.0
 
+@export_group("Vegetación")
+## Capas en orden de generación. Reordenarlas cambia el mundo.
+@export var vegetation_layers: Array[VegetationLayer] = []
+
 
 ## Número de muestras por lado del heightmap.
 func resolution() -> int:

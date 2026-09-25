@@ -20,5 +20,7 @@ func _init() -> void:
 		var poi_id: StringName = settings.poi_definitions[poi.definition_index].id
 		poi_counts[poi_id] = poi_counts.get(poi_id, 0) + 1
 	print("pois=%s" % poi_counts)
+	for l: int in data.vegetation.size():
+		print("  veg %-10s %6d" % [settings.vegetation_layers[l].id, data.vegetation[l].size() / VegetationPhase.STRIDE])
 	print("hash=%s" % data.compute_hash())
 	quit()
