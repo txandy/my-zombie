@@ -14,6 +14,13 @@ config/name="my-zombie"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+EventBus="*res://src/core/event_bus.gd"
+NetManager="*res://src/core/net_manager.gd"
+GameState="*res://src/core/game_state.gd"
+SaveSystem="*res://src/core/save_system.gd"
+
 [debug]
 
 gdscript/warnings/untyped_declaration=2
