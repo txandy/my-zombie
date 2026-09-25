@@ -3,8 +3,10 @@ extends Node
 ## Calcula la velocidad del jugador a partir de la entrada y la postura.
 ## No mueve el cuerpo: Player aplica el resultado con move_and_slide().
 
-## Hook para la stamina (M5): cuando sea false no se puede esprintar.
+## Hook para la stamina (M5) y las heridas en las piernas: cuando sea false no se puede esprintar.
 var sprint_allowed: bool = true
+## Multiplicador de velocidad (heridas en las piernas; peso del inventario en M3).
+var speed_multiplier: float = 1.0
 ## True si en el último cálculo el jugador estaba esprintando.
 var is_sprinting: bool = false
 
@@ -44,7 +46,7 @@ func compute_velocity(current: Vector3, frame: PlayerInputFrame, basis: Basis,
 	var wish: Vector3 = basis * Vector3(frame.move.x, 0.0, -frame.move.y)
 	wish.y = 0.0
 	var wish_dir: Vector3 = wish.normalized() * minf(frame.move.length(), 1.0)
-	var target: Vector3 = wish_dir * target_speed(_profile, posture, is_sprinting)
+	var target: Vector3 = wish_dir * target_speed(_profile, posture, is_sprinting) * speed_multiplier
 
 	var accel: float = _profile.air_acceleration
 	if on_floor:

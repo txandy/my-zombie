@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=27 format=3]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/player/default_movement_profile.tres" id="2_profile"]
@@ -6,11 +6,44 @@
 [ext_resource type="Script" path="res://src/player/posture_component.gd" id="4_posture"]
 [ext_resource type="Script" path="res://src/player/movement_component.gd" id="5_movement"]
 [ext_resource type="Script" path="res://src/player/camera_rig.gd" id="6_camera_rig"]
+[ext_resource type="Script" path="res://src/combat/health/health_component.gd" id="7_health"]
+[ext_resource type="Resource" path="res://data/combat/human_health_profile.tres" id="8_health_profile"]
+[ext_resource type="Script" path="res://src/combat/armor/armor_component.gd" id="9_armor"]
+[ext_resource type="Script" path="res://src/combat/damage/damage_receiver.gd" id="10_receiver"]
+[ext_resource type="Resource" path="res://data/combat/combat_rules.tres" id="11_rules"]
+[ext_resource type="PackedScene" path="res://scenes/combat/humanoid_hitboxes.tscn" id="12_hitboxes"]
+[ext_resource type="Script" path="res://src/combat/weapons/weapon_holder.gd" id="13_holder"]
+[ext_resource type="Resource" path="res://data/combat/weapons/assault_rifle.tres" id="14_rifle"]
+[ext_resource type="Resource" path="res://data/combat/weapons/pistol.tres" id="15_pistol"]
+[ext_resource type="Resource" path="res://data/combat/weapons/knife.tres" id="16_knife"]
+[ext_resource type="Script" path="res://src/player/viewmodel.gd" id="17_viewmodel"]
+[ext_resource type="Script" path="res://src/ui/combat_hud.gd" id="18_hud"]
+[ext_resource type="Script" path="res://src/combat/weapons/weapon_definition.gd" id="19_weapon_def"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 resource_local_to_scene = true
 radius = 0.35
 height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_gun"]
+albedo_color = Color(0.15, 0.15, 0.16, 1)
+metallic = 0.4
+
+[sub_resource type="StandardMaterial3D" id="Mat_blade"]
+albedo_color = Color(0.7, 0.72, 0.75, 1)
+metallic = 0.8
+
+[sub_resource type="BoxMesh" id="Mesh_rifle"]
+material = SubResource("Mat_gun")
+size = Vector3(0.06, 0.09, 0.75)
+
+[sub_resource type="BoxMesh" id="Mesh_pistol"]
+material = SubResource("Mat_gun")
+size = Vector3(0.04, 0.12, 0.2)
+
+[sub_resource type="BoxMesh" id="Mesh_knife"]
+material = SubResource("Mat_blade")
+size = Vector3(0.02, 0.03, 0.28)
 
 [node name="Player" type="CharacterBody3D"]
 script = ExtResource("1_player")
@@ -29,6 +62,29 @@ script = ExtResource("4_posture")
 [node name="Movement" type="Node" parent="."]
 script = ExtResource("5_movement")
 
+[node name="Health" type="Node" parent="."]
+script = ExtResource("7_health")
+profile = ExtResource("8_health_profile")
+
+[node name="Armor" type="Node" parent="."]
+script = ExtResource("9_armor")
+
+[node name="Hitboxes" parent="." instance=ExtResource("12_hitboxes")]
+
+[node name="DamageReceiver" type="Node" parent="." node_paths=PackedStringArray("health", "armor", "hitboxes_root")]
+script = ExtResource("10_receiver")
+health = NodePath("../Health")
+armor = NodePath("../Armor")
+hitboxes_root = NodePath("../Hitboxes")
+rules = ExtResource("11_rules")
+
+[node name="WeaponHolder" type="Node" parent="." node_paths=PackedStringArray("health", "damage_receiver", "body")]
+script = ExtResource("13_holder")
+loadout = Array[ExtResource("19_weapon_def")]([ExtResource("14_rifle"), ExtResource("15_pistol"), ExtResource("16_knife")])
+health = NodePath("../Health")
+damage_receiver = NodePath("../DamageReceiver")
+body = NodePath("..")
+
 [node name="Head" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.65, 0)
 script = ExtResource("6_camera_rig")
@@ -37,3 +93,102 @@ script = ExtResource("6_camera_rig")
 current = true
 fov = 80.0
 near = 0.05
+
+[node name="Viewmodel" type="Node3D" parent="Head/Camera3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.18, -0.16, -0.4)
+script = ExtResource("17_viewmodel")
+
+[node name="assault_rifle" type="MeshInstance3D" parent="Head/Camera3D/Viewmodel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.1)
+mesh = SubResource("Mesh_rifle")
+
+[node name="pistol" type="MeshInstance3D" parent="Head/Camera3D/Viewmodel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.05)
+visible = false
+mesh = SubResource("Mesh_pistol")
+
+[node name="knife" type="MeshInstance3D" parent="Head/Camera3D/Viewmodel"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+visible = false
+mesh = SubResource("Mesh_knife")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="CombatHud" type="Control" parent="HUD" node_paths=PackedStringArray("health", "weapons", "receiver")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("18_hud")
+health = NodePath("../../Health")
+weapons = NodePath("../../WeaponHolder")
+receiver = NodePath("../../DamageReceiver")
+
+[node name="Crosshair" type="Label" parent="HUD/CombatHud"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -6.0
+offset_top = -14.0
+offset_right = 6.0
+offset_bottom = 12.0
+text = "·"
+horizontal_alignment = 1
+
+[node name="Hitmarker" type="Label" parent="HUD/CombatHud"]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -14.0
+offset_right = 10.0
+offset_bottom = 12.0
+theme_override_colors/font_color = Color(1, 0.3, 0.25, 1)
+text = "x"
+horizontal_alignment = 1
+
+[node name="WeaponLabel" type="Label" parent="HUD/CombatHud"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -520.0
+offset_top = -40.0
+offset_right = -16.0
+offset_bottom = -12.0
+horizontal_alignment = 2
+
+[node name="HealthLabel" type="Label" parent="HUD/CombatHud"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -190.0
+offset_right = 460.0
+offset_bottom = -12.0
+theme_override_font_sizes/font_size = 14
+
+[node name="StatusLabel" type="Label" parent="HUD/CombatHud"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -300.0
+offset_top = 40.0
+offset_right = 300.0
+offset_bottom = 66.0
+theme_override_colors/font_color = Color(1, 0.55, 0.3, 1)
+horizontal_alignment = 1

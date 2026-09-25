@@ -35,5 +35,12 @@ func poll() -> PlayerInputFrame:
 	frame.crouch_toggled = Input.is_action_just_pressed(&"crouch")
 	frame.prone_toggled = Input.is_action_just_pressed(&"prone")
 	frame.lean = int(Input.is_action_pressed(&"lean_right")) - int(Input.is_action_pressed(&"lean_left"))
+	frame.fire_held = Input.is_action_pressed(&"fire")
+	frame.fire_pressed = Input.is_action_just_pressed(&"fire")
+	frame.aim = Input.is_action_pressed(&"aim")
+	frame.reload = Input.is_action_just_pressed(&"reload")
+	for slot: int in 3:
+		if Input.is_action_just_pressed(StringName("weapon_%d" % (slot + 1))):
+			frame.weapon_slot = slot
 	_look_accum = Vector2.ZERO
 	return frame

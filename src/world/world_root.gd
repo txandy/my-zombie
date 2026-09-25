@@ -26,6 +26,7 @@ func _ready() -> void:
 			chosen_seed, generated - start, built - generated, data.compute_hash().left(12)])
 
 	_player.global_position = spawn_position(data, settings)
+	_player.spawn_point = _player.global_position
 
 
 func _resolve_seed() -> int:

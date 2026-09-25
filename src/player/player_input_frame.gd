@@ -17,3 +17,12 @@ var crouch_toggled: bool = false
 var prone_toggled: bool = false
 ## -1: izquierda, 0: nada, 1: derecha.
 var lean: int = 0
+
+## Combate.
+## Disparo mantenido (automático) y pulsado en este tick (semiautomático / cuerpo a cuerpo).
+var fire_held: bool = false
+var fire_pressed: bool = false
+var aim: bool = false
+var reload: bool = false
+## Arma pedida en este tick (índice del loadout) o -1.
+var weapon_slot: int = -1
