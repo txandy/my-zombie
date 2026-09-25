@@ -1,0 +1,104 @@
+[gd_scene load_steps=14 format=3]
+
+[ext_resource type="Script" path="res://src/world/test_level.gd" id="1_level"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/combat/dummy.tscn" id="3_dummy"]
+[ext_resource type="PackedScene" path="res://scenes/combat/hostile_dummy.tscn" id="4_hostile"]
+[ext_resource type="Resource" path="res://data/combat/armor/helmet_class3.tres" id="5_helmet"]
+[ext_resource type="Resource" path="res://data/combat/armor/vest_class4.tres" id="6_vest"]
+[ext_resource type="Script" path="res://src/combat/fx/impact_markers.gd" id="7_markers"]
+[ext_resource type="Script" path="res://src/combat/armor/armor_definition.gd" id="8_armor_def"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_material"]
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_material")
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+albedo_color = Color(0.42, 0.44, 0.4, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_props"]
+albedo_color = Color(0.72, 0.55, 0.35, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_board"]
+albedo_color = Color(0.9, 0.9, 0.86, 1)
+
+[node name="ShootingRange" type="Node3D"]
+script = ExtResource("1_level")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 20, 0)
+shadow_enabled = true
+directional_shadow_max_distance = 250.0
+
+[node name="Floor" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, -100)
+use_collision = true
+size = Vector3(80, 1, 260)
+material = SubResource("Mat_floor")
+
+[node name="Backstop" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 5, -205)
+use_collision = true
+size = Vector3(40, 10, 1)
+material = SubResource("Mat_board")
+
+[node name="HostileCover" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0.6, -18)
+use_collision = true
+size = Vector3(3, 1.2, 0.6)
+material = SubResource("Mat_props")
+
+[node name="PlayerCover" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3, 0.6, -3)
+use_collision = true
+size = Vector3(3, 1.2, 0.6)
+material = SubResource("Mat_props")
+
+[node name="ImpactMarkers" type="Node3D" parent="."]
+script = ExtResource("7_markers")
+
+[node name="Targets" type="Node3D" parent="."]
+
+[node name="Bare_10" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -10)
+
+[node name="Armored_10" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -10)
+armor_set = Array[ExtResource("8_armor_def")]([ExtResource("5_helmet"), ExtResource("6_vest")])
+
+[node name="Bare_25" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -25)
+
+[node name="Armored_25" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -25)
+armor_set = Array[ExtResource("8_armor_def")]([ExtResource("5_helmet"), ExtResource("6_vest")])
+
+[node name="Bare_50" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -50)
+
+[node name="Armored_50" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -50)
+armor_set = Array[ExtResource("8_armor_def")]([ExtResource("5_helmet"), ExtResource("6_vest")])
+
+[node name="Bare_100" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -100)
+
+[node name="Armored_100" parent="Targets" instance=ExtResource("3_dummy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3, 0, -100)
+armor_set = Array[ExtResource("8_armor_def")]([ExtResource("5_helmet"), ExtResource("6_vest")])
+
+[node name="Hostile" parent="." instance=ExtResource("4_hostile")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 0, -19)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)

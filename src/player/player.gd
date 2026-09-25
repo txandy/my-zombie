@@ -26,6 +26,7 @@ func _ready() -> void:
 	assert(movement_profile != null, "Player necesita un PlayerMovementProfile")
 	collision_layer = PhysicsLayers.CHARACTERS
 	collision_mask = PhysicsLayers.WORLD | PhysicsLayers.CHARACTERS
+	add_to_group(&"player")
 	_posture.setup(self, $CollisionShape3D, _head, movement_profile)
 	_movement.setup(movement_profile)
 	_head.setup(movement_profile)

@@ -6,7 +6,7 @@ extends Node3D
 ## Hijos con el mismo nombre que el id del arma (assault_rifle, pistol, knife).
 @export var kick_distance_m: float = 0.06
 @export var kick_recovery: float = 12.0
-@export var aim_offset := Vector3(-0.18, 0.05, 0.0)
+@export var aim_offset := Vector3(-0.16, 0.08, 0.05)
 
 var _rest: Vector3
 var _kick: float = 0.0
