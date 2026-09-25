@@ -24,6 +24,7 @@ var spawn_point: Vector3 = Vector3.ZERO
 @onready var inventory: InventoryComponent = $Inventory
 @onready var interactor: Interactor = $Interactor
 @onready var survival: SurvivalComponent = $Survival
+@onready var build_tool: BuildTool = $BuildTool
 @onready var _viewmodel: Viewmodel = $Head/Camera3D/Viewmodel
 
 
@@ -82,6 +83,10 @@ func step(frame: PlayerInputFrame, delta: float) -> void:
 
 
 func _handle_weapons(frame: PlayerInputFrame) -> void:
+	if build_tool.active:
+		if frame.fire_pressed:
+			build_tool.place()
+		return
 	if frame.weapon_slot >= 0:
 		weapons.request_switch(frame.weapon_slot)
 	if frame.reload:

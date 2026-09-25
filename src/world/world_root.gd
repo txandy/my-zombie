@@ -34,6 +34,9 @@ func _ready() -> void:
 	_player.global_position = data.spawns.player_spawn
 	_player.spawn_point = _player.global_position
 	_player.survival.climate_sampler = _climate_at
+	var buildings := BuildingManager.new()
+	buildings.name = "Buildings"
+	add_child(buildings)
 	_spawn_npcs()
 
 

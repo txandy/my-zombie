@@ -21,3 +21,4 @@ min_scale = 0.85
 max_scale = 1.2
 collision_radius = 0.35
 collision_height = 3.4
+resources = 50

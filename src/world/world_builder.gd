@@ -182,4 +182,5 @@ func _register_cover(registry: CoverRegistry, layer: VegetationLayer, instances:
 	for i: int in indices:
 		var scale: float = instances[i + 4]
 		registry.add_obstacle(Vector3(instances[i], instances[i + 1], instances[i + 2]),
-				layer.collision_radius * scale, layer.collision_height * scale)
+				layer.collision_radius * scale, layer.collision_height * scale,
+				CoverRegistry.Kind.ROCK if layer.is_rock else CoverRegistry.Kind.TREE, layer.resources)

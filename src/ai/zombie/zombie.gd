@@ -152,6 +152,20 @@ func _chase(delta: float) -> void:
 	else:
 		state = State.CHASE
 		_move_towards(target.global_position, chase_speed(), delta)
+		_attack_blocking_structure()
+
+
+# Si una pieza de construcción le corta el paso, la golpea (GDD §10: los zombis atacan la base).
+func _attack_blocking_structure() -> void:
+	if _attack_timer > 0.0:
+		return
+	for i: int in get_slide_collision_count():
+		var piece := get_slide_collision(i).get_collider() as BuildingPieceNode
+		if piece != null:
+			_attack_timer = profile.attack_interval_s
+			piece.receive_structure_damage(profile.structure_damage)
+			EventBus.sound_emitted.emit(global_position, 25.0, &"zombie_attack", self)
+			return
 
 
 func _attack(victim: Node3D) -> void:

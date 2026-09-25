@@ -30,6 +30,11 @@ extends Resource
 ## Distancia a la que se deja de dibujar (m). 0 = siempre visible. Solo afecta al render.
 @export var visibility_range_m: float = 0.0
 
+@export_group("Recursos")
+## Si es un árbol o una roca (qué recurso da al recogerlo) y cuánto da en total.
+@export var is_rock: bool = false
+@export var resources: int = 0
+
 @export_group("Colisión")
 ## Cilindro de colisión con escala 1 (se escala con cada instancia). 0 = sin colisión (arbustos).
 @export var collision_radius: float = 0.0

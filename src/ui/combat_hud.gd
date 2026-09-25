@@ -7,6 +7,7 @@ extends Control
 @export var receiver: DamageReceiver
 @export var interactor: Interactor
 @export var survival: SurvivalComponent
+@export var build_tool: BuildTool
 ## Segundos que se muestra la salud tras recibir daño (GDD §14: visible al recibir daño).
 @export var health_visible_s: float = 6.0
 
@@ -21,6 +22,7 @@ var _reload_timer: float = 0.0
 @onready var _status_label: Label = $StatusLabel
 @onready var _prompt_label: Label = $PromptLabel
 @onready var _stamina_bar: ProgressBar = $StaminaBar
+@onready var _build_label: Label = $BuildLabel
 
 
 func _ready() -> void:
@@ -49,8 +51,11 @@ func _process(delta: float) -> void:
 	_stamina_bar.visible = survival.stamina < survival.profile.max_stamina - 0.5
 	if is_instance_valid(interactor.focused):
 		_prompt_label.text = "[F] %s" % String(interactor.focused.call(&"interaction_text"))
+	elif interactor.gather_text() != "":
+		_prompt_label.text = "[F] %s" % interactor.gather_text()
 	else:
 		_prompt_label.text = ""
+	_build_label.text = build_tool.describe()
 
 
 func _weapon_text() -> String:

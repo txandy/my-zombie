@@ -13,6 +13,8 @@ signal projectile_impacted(position: Vector3, normal: Vector3, hitbox: Hitbox, s
 
 ## Tiempo máximo de vuelo de una bala.
 const MAX_LIFETIME_S: float = 4.0
+## Fracción del daño de una bala que recibe una pieza de construcción.
+const STRUCTURE_DAMAGE_FACTOR: float = 0.1
 
 
 class Projectile:
@@ -93,4 +95,7 @@ func _impact(p: Projectile, hit: Dictionary) -> void:
 	var hitbox := hit.collider as Hitbox
 	if hitbox != null and hitbox.receiver != null:
 		hitbox.receiver.receive_bullet(hitbox.zone, p.ammo, p.source, rng)
+	elif hit.get("collider") is Object and (hit.collider as Object).has_method(&"receive_structure_damage"):
+		# Las balas apenas dañan las construcciones.
+		(hit.collider as Object).call(&"receive_structure_damage", p.ammo.damage * STRUCTURE_DAMAGE_FACTOR)
 	projectile_impacted.emit(hit.position as Vector3, hit.normal as Vector3, hitbox, p.source)
