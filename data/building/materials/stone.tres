@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="BuildingMaterial" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/building/building_material.gd" id="1"]
+[ext_resource type="Resource" path="res://data/items/stone.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"stone"
+display_name = "Piedra"
+tier = 1
+resource_item = ExtResource("2")
+base_hp = 600.0
+base_cost = 14
+color = Color(0.62, 0.62, 0.6, 1)
