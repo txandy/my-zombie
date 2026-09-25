@@ -29,3 +29,4 @@ min_scale = 0.6
 max_scale = 1.6
 collision_radius = 0.9
 collision_height = 1.2
+visibility_range_m = 350.0

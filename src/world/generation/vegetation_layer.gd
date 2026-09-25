@@ -24,6 +24,8 @@ extends Resource
 @export_group("Instancia")
 @export var min_scale: float = 1.0
 @export var max_scale: float = 1.0
+## Distancia a la que se deja de dibujar (m). 0 = siempre visible. Solo afecta al render.
+@export var visibility_range_m: float = 0.0
 
 @export_group("Colisión")
 ## Radio del cilindro de colisión con escala 1. 0 = sin colisión (hierba, arbustos).
