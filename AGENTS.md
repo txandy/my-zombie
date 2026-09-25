@@ -92,6 +92,7 @@ func _server_move_item(item_id: StringName, target: StringName, cell: Vector2i, 
 - Framework: gdUnit4. Los tests van en `/tests`, replicando la ruta de `/src`.
 - **Obligatorio tener tests** para: modelo de inventario (colocación, rotación, anidado, stacks), determinismo de la generación (hash por seed), cálculo de daño y armadura, tablas de loot, validación de solicitudes de red y el modelo de puntería de la IA (convergencia del error, límites de headshot).
 - Los tests deben pasar en headless antes de dar una tarea por terminada.
+- Ejecución: `GODOT_BIN=/ruta/godot tools/run_tests.sh` (o `tools/run_tests.ps1` en Windows). Acepta `-a res://tests/ruta` para ejecutar solo una parte. La CI (`.github/workflows/tests.yml`) ejecuta lo mismo en cada PR.
 - No borres ni desactives tests para que la suite pase. Si un test está mal, explícalo en la respuesta.
 
 ---
