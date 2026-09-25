@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="PlayerMovementProfile" format=3]
+
+[ext_resource type="Script" path="res://src/player/player_movement_profile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+walk_speed = 3.5
+sprint_speed = 6.0
+crouch_speed = 1.8
+prone_speed = 0.7
+acceleration = 30.0
+deceleration = 40.0
+air_acceleration = 4.0
+jump_velocity = 4.5
+capsule_radius = 0.35
+standing_height = 1.8
+crouch_height = 1.2
+prone_height = 0.7
+eye_offset = 0.15
+posture_change_speed = 4.0
+lean_angle_deg = 15.0
+lean_offset = 0.35
+lean_speed = 5.0
