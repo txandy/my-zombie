@@ -1,6 +1,7 @@
 class_name ArmorComponent
 extends Node
-## Armadura equipada de un personaje. En M3 se alimentará de los slots de equipo del inventario.
+## Armadura equipada de un personaje: fija (starting_armor, dummies) o los objetos de
+## armadura equipados en el inventario (set_from_items).
 
 @export var starting_armor: Array[ArmorDefinition] = []
 
@@ -23,3 +24,11 @@ func piece_for(zone: BodyZones.Zone) -> ArmorInstance:
 		if piece.protects(zone):
 			return piece
 	return null
+
+
+## Usa como armadura los objetos equipados que la tengan (casco, chaleco).
+func set_from_items(items: Array[ItemInstance]) -> void:
+	pieces.clear()
+	for item: ItemInstance in items:
+		if item != null and item.definition.armor != null:
+			pieces.append(ArmorInstance.from_item(item))

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/items/item_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://data/combat/armor/vest_class4.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"vest_class4"
+display_name = "Chaleco (clase 4)"
+category = 2
+size = Vector2i(3, 3)
+max_stack = 1
+weight_kg = 8.2
+icon_color = Color(0.3, 0.35, 0.28, 1)
+armor = ExtResource("2")

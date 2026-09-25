@@ -19,6 +19,8 @@ var _hp := PackedFloat32Array()
 var _bleeding: Array[Bleed] = []
 var _fractured: Array[bool] = []
 var _pain_left_s: float = 0.0
+## Tiempo restante de analgésico: mientras dure, el dolor no tiene efecto.
+var _painkiller_left_s: float = 0.0
 
 
 func _ready() -> void:
@@ -40,6 +42,7 @@ func reset() -> void:
 		_bleeding.append(Bleed.NONE)
 		_fractured.append(false)
 	_pain_left_s = 0.0
+	_painkiller_left_s = 0.0
 	is_dead = false
 	status_changed.emit()
 
@@ -61,7 +64,7 @@ func is_destroyed(zone: BodyZones.Zone) -> bool:
 
 
 func has_pain() -> bool:
-	return _pain_left_s > 0.0
+	return _pain_left_s > 0.0 and _painkiller_left_s <= 0.0
 
 
 ## Aplica daño a una zona y tira los estados que pueda causar. Solo en el host.
@@ -77,6 +80,7 @@ func tick(delta: float) -> void:
 	if is_dead:
 		return
 	_pain_left_s = maxf(_pain_left_s - delta, 0.0)
+	_painkiller_left_s = maxf(_painkiller_left_s - delta, 0.0)
 	for zone: BodyZones.Zone in BodyZones.ALL:
 		match _bleeding[zone]:
 			Bleed.LIGHT:
@@ -175,3 +179,50 @@ func spread_multiplier() -> float:
 
 func reload_multiplier() -> float:
 	return profile.arm_injury_reload_multiplier if _limb_injured(BodyZones.is_arm) else 1.0
+
+
+# --- Tratamientos (los aplican los objetos médicos en el host) ---
+
+## Detiene un sangrado del nivel dado (el de la zona con menos vida primero).
+## Devuelve true si había alguno.
+func stop_bleeding(level: Bleed) -> bool:
+	var target: int = -1
+	for zone: BodyZones.Zone in BodyZones.ALL:
+		if _bleeding[zone] == level and (target < 0 or _hp[zone] < _hp[target]):
+			target = zone
+	if target < 0:
+		return false
+	_bleeding[target] = Bleed.NONE
+	status_changed.emit()
+	return true
+
+
+## Inmoviliza una fractura (la de la zona con menos vida primero). True si había alguna.
+func fix_fracture() -> bool:
+	var target: int = -1
+	for zone: BodyZones.Zone in BodyZones.ALL:
+		if _fractured[zone] and (target < 0 or _hp[zone] < _hp[target]):
+			target = zone
+	if target < 0:
+		return false
+	_fractured[target] = false
+	status_changed.emit()
+	return true
+
+
+## Anula el efecto del dolor durante `duration_s`.
+func suppress_pain(duration_s: float) -> void:
+	_painkiller_left_s = maxf(_painkiller_left_s, duration_s)
+	status_changed.emit()
+
+
+func has_bleeding(level: Bleed) -> bool:
+	return _bleeding.has(level)
+
+
+func has_fracture() -> bool:
+	return _fractured.has(true)
+
+
+func is_pain_suppressed() -> bool:
+	return _painkiller_left_s > 0.0

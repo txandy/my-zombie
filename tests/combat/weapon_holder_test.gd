@@ -59,7 +59,7 @@ func test_fire_consumes_round_and_respects_rate() -> void:
 
 func test_empty_magazine_does_not_fire_and_reload_refills() -> void:
 	var holder: WeaponHolder = _holder([_pistol])
-	holder.rounds[0] = 0
+	holder.current_item().state["rounds"] = 0
 	holder.request_attack(Vector3.ZERO, Vector3.FORWARD, true)
 	assert_int(Ballistics.active_count()).is_equal(0)
 	holder.request_reload()
@@ -133,14 +133,15 @@ func test_other_peer_cannot_use_holder() -> void:
 func test_player_shoots_dummy_with_input() -> void:
 	_add_wall(Vector3(0, -0.5, 0), Vector3(40, 1, 40))
 	var player: Player = (load(PLAYER_SCENE) as PackedScene).instantiate() as Player
+	player.starting_kit = load("res://data/inventory/kits/range_kit.tres") as StartingKit
 	_world.add_child(player)
 	player.set_physics_process(false)
 	player.global_position = Vector3(0, 0.05, 0)
 	var dummy: TargetDummy = _add_dummy(Vector3(0, 0, -8))
 	await _ticks(5)
-	# Pistola (semiautomática) apuntando al frente, a la altura del tórax del dummy.
+	# Pistola (slot 2, semiautomática) apuntando al frente, a la altura del tórax del dummy.
 	var switch := PlayerInputFrame.new()
-	switch.weapon_slot = 1
+	switch.weapon_slot = 2
 	player.step(switch, 1.0 / 60.0)
 	await _ticks(20)
 	var shoot := PlayerInputFrame.new()

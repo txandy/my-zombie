@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://src/items/item_definition.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+id = &"duct_tape"
+display_name = "Cinta americana"
+category = 7
+size = Vector2i(1, 1)
+max_stack = 1
+weight_kg = 0.1
+icon_color = Color(0.6, 0.6, 0.62, 1)

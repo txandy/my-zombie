@@ -24,5 +24,5 @@ var fire_held: bool = false
 var fire_pressed: bool = false
 var aim: bool = false
 var reload: bool = false
-## Arma pedida en este tick (índice del loadout) o -1.
+## Arma pedida en este tick (0 principal, 1 secundaria, 2 pistola, 3 cuerpo a cuerpo) o -1.
 var weapon_slot: int = -1

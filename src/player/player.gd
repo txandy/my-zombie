@@ -8,6 +8,8 @@ extends CharacterBody3D
 @export var movement_profile: PlayerMovementProfile
 ## 🔶 Reaparición de desarrollo tras morir (no hay diseño de muerte/respawn todavía).
 @export var respawn_time_s: float = 3.0
+## Equipo con el que aparece (lo reparte el host).
+@export var starting_kit: StartingKit
 
 var spawn_point: Vector3 = Vector3.ZERO
 
@@ -19,6 +21,7 @@ var spawn_point: Vector3 = Vector3.ZERO
 @onready var health: HealthComponent = $Health
 @onready var armor: ArmorComponent = $Armor
 @onready var weapons: WeaponHolder = $WeaponHolder
+@onready var inventory: InventoryComponent = $Inventory
 @onready var _viewmodel: Viewmodel = $Head/Camera3D/Viewmodel
 
 
@@ -35,6 +38,10 @@ func _ready() -> void:
 	weapons.melee_swung.connect(func(_w: WeaponDefinition) -> void: _viewmodel.kick())
 	weapons.weapon_changed.connect(_viewmodel.show_weapon)
 	health.died.connect(_on_died)
+	weapons.ammo_provider = inventory
+	inventory.inventory_changed.connect(_sync_equipment)
+	inventory.apply_kit(starting_kit)
+	_sync_equipment()
 	_viewmodel.show_weapon(weapons.current())
 
 
@@ -49,7 +56,7 @@ func step(frame: PlayerInputFrame, delta: float) -> void:
 	_head.apply_look(self, frame.look_delta)
 	_posture.update(frame, delta)
 	_movement.sprint_allowed = health.can_sprint()
-	_movement.speed_multiplier = health.movement_multiplier()
+	_movement.speed_multiplier = health.movement_multiplier() * inventory.inventory.speed_multiplier()
 	velocity = _movement.compute_velocity(velocity, frame, global_basis, _posture.posture,
 			is_on_floor(), _posture.changed_this_frame, delta)
 	var can_lean: bool = (_posture.posture != PostureComponent.Posture.PRONE
@@ -88,7 +95,7 @@ func _on_died(_zone: BodyZones.Zone) -> void:
 	global_position = spawn_point
 	velocity = Vector3.ZERO
 	health.reset()
-	armor.reset()
+	_sync_equipment()
 
 
 func get_posture() -> PostureComponent.Posture:
@@ -97,3 +104,11 @@ func get_posture() -> PostureComponent.Posture:
 
 func is_sprinting() -> bool:
 	return _movement.is_sprinting
+
+
+## El equipo del inventario manda: armas en los slots de arma y armadura en casco/torso.
+func _sync_equipment() -> void:
+	var inv: Inventory = inventory.inventory
+	weapons.set_weapon_items([inv.item_in(Inventory.Slot.PRIMARY), inv.item_in(Inventory.Slot.SECONDARY),
+			inv.item_in(Inventory.Slot.PISTOL), inv.item_in(Inventory.Slot.MELEE)])
+	armor.set_from_items([inv.item_in(Inventory.Slot.HELMET), inv.item_in(Inventory.Slot.TORSO)])

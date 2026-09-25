@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/items/item_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://data/combat/armor/helmet_class3.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"helmet_class3"
+display_name = "Casco (clase 3)"
+category = 2
+size = Vector2i(2, 2)
+max_stack = 1
+weight_kg = 1.4
+icon_color = Color(0.33, 0.38, 0.3, 1)
+armor = ExtResource("2")

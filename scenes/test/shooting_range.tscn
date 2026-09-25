@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://src/world/test_level.gd" id="1_level"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
@@ -8,6 +8,7 @@
 [ext_resource type="Resource" path="res://data/combat/armor/vest_class4.tres" id="6_vest"]
 [ext_resource type="Script" path="res://src/combat/fx/impact_markers.gd" id="7_markers"]
 [ext_resource type="Script" path="res://src/combat/armor/armor_definition.gd" id="8_armor_def"]
+[ext_resource type="Resource" path="res://data/inventory/kits/range_kit.tres" id="9_kit"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_material"]
 
@@ -102,3 +103,4 @@ transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 14, 0, -19)
 
 [node name="Player" parent="." instance=ExtResource("2_player")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+starting_kit = ExtResource("9_kit")

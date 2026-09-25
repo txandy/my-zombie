@@ -158,3 +158,60 @@ func _is_valid_sender() -> bool:
 
 func _reject(reason: String) -> void:
 	request_rejected.emit(reason)
+
+
+# --- Proveedor de munición para WeaponHolder (host) ---
+
+func count_ammo(ammo_id: StringName) -> int:
+	return inventory.count_ammo(ammo_id)
+
+
+func take_ammo(ammo_id: StringName, amount: int) -> int:
+	return inventory.take_ammo(ammo_id, amount)
+
+
+## Tipos de munición del calibre que hay en el almacenamiento, en orden de aparición.
+func ammo_types_for(caliber: StringName) -> Array[AmmoDefinition]:
+	var result: Array[AmmoDefinition] = []
+	for container: ItemContainer in inventory.storage():
+		_collect_ammo_types(container, caliber, result)
+	return result
+
+
+func _collect_ammo_types(container: ItemContainer, caliber: StringName, result: Array[AmmoDefinition]) -> void:
+	for item: ItemInstance in container.items():
+		var ammo: AmmoDefinition = item.definition.ammo
+		if ammo != null and ammo.caliber == caliber and not result.has(ammo):
+			result.append(ammo)
+		if item.contents != null:
+			_collect_ammo_types(item.contents, caliber, result)
+
+
+## Devuelve balas al inventario (al descargar un arma). Lo que no cabe se tira al suelo.
+func return_ammo(ammo: AmmoDefinition, amount: int) -> void:
+	var def: ItemDefinition = ItemCatalog.load_default().item_for_ammo(ammo)
+	if def == null or amount <= 0:
+		return
+	while amount > 0:
+		var stack := ItemInstance.new(def, mini(amount, def.max_stack))
+		amount -= stack.quantity
+		if inventory.store(stack) > 0:
+			item_dropped.emit(stack)
+
+
+## Host: crea y reparte un kit inicial. Las armas vienen cargadas con su munición por defecto.
+func apply_kit(kit: StartingKit) -> void:
+	if not multiplayer.is_server() or kit == null:
+		return
+	var to_store: Array[ItemInstance] = []
+	for entry: KitEntry in kit.entries:
+		var item := ItemInstance.new(entry.item, entry.quantity)
+		if entry.item.weapon != null:
+			WeaponHolder.load_full(item)
+		if entry.slot >= 0:
+			inventory.equip(item, entry.slot as Inventory.Slot)
+		else:
+			to_store.append(item)
+	for item: ItemInstance in to_store:
+		if inventory.store(item) > 0:
+			item_dropped.emit(item)

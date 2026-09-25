@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="ItemDefinition" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://src/items/item_definition.gd" id="1"]
+[ext_resource type="Resource" path="res://data/combat/weapons/knife.tres" id="2"]
+
+[resource]
+script = ExtResource("1")
+id = &"knife"
+display_name = "Cuchillo"
+category = 0
+size = Vector2i(2, 1)
+max_stack = 1
+weight_kg = 0.3
+icon_color = Color(0.55, 0.57, 0.6, 1)
+weapon = ExtResource("2")

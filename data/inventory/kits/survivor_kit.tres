@@ -1,0 +1,36 @@
+[gd_resource type="Resource" script_class="StartingKit" load_steps=11 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/starting_kit.gd" id="1"]
+[ext_resource type="Script" path="res://src/inventory/kit_entry.gd" id="2"]
+[ext_resource type="Resource" path="res://data/items/knife.tres" id="10"]
+[ext_resource type="Resource" path="res://data/items/pistol.tres" id="11"]
+[ext_resource type="Resource" path="res://data/items/ammo_9x19_pst.tres" id="12"]
+[ext_resource type="Resource" path="res://data/items/bandage.tres" id="13"]
+
+[sub_resource type="Resource" id="E0"]
+script = ExtResource("2")
+item = ExtResource("10")
+quantity = 1
+slot = 6
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("2")
+item = ExtResource("11")
+quantity = 1
+slot = 5
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("2")
+item = ExtResource("12")
+quantity = 25
+slot = -1
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("2")
+item = ExtResource("13")
+quantity = 1
+slot = -1
+
+[resource]
+script = ExtResource("1")
+entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3")])

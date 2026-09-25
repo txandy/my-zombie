@@ -42,5 +42,7 @@ func poll() -> PlayerInputFrame:
 	for slot: int in 3:
 		if Input.is_action_just_pressed(StringName("weapon_%d" % (slot + 1))):
 			frame.weapon_slot = slot
+	if Input.is_action_just_pressed(&"weapon_melee"):
+		frame.weapon_slot = 3
 	_look_accum = Vector2.ZERO
 	return frame

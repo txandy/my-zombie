@@ -1,0 +1,106 @@
+[gd_resource type="Resource" script_class="StartingKit" load_steps=31 format=3]
+
+[ext_resource type="Script" path="res://src/inventory/starting_kit.gd" id="1"]
+[ext_resource type="Script" path="res://src/inventory/kit_entry.gd" id="2"]
+[ext_resource type="Resource" path="res://data/items/assault_rifle.tres" id="10"]
+[ext_resource type="Resource" path="res://data/items/pistol.tres" id="11"]
+[ext_resource type="Resource" path="res://data/items/knife.tres" id="12"]
+[ext_resource type="Resource" path="res://data/items/helmet_class3.tres" id="13"]
+[ext_resource type="Resource" path="res://data/items/vest_class4.tres" id="14"]
+[ext_resource type="Resource" path="res://data/items/backpack_small.tres" id="15"]
+[ext_resource type="Resource" path="res://data/items/ammo_762x39_ps.tres" id="16"]
+[ext_resource type="Resource" path="res://data/items/ammo_762x39_ps.tres" id="17"]
+[ext_resource type="Resource" path="res://data/items/ammo_762x39_hp.tres" id="18"]
+[ext_resource type="Resource" path="res://data/items/ammo_9x19_pst.tres" id="19"]
+[ext_resource type="Resource" path="res://data/items/bandage.tres" id="20"]
+[ext_resource type="Resource" path="res://data/items/tourniquet.tres" id="21"]
+[ext_resource type="Resource" path="res://data/items/splint.tres" id="22"]
+[ext_resource type="Resource" path="res://data/items/painkillers.tres" id="23"]
+
+[sub_resource type="Resource" id="E0"]
+script = ExtResource("2")
+item = ExtResource("10")
+quantity = 1
+slot = 3
+
+[sub_resource type="Resource" id="E1"]
+script = ExtResource("2")
+item = ExtResource("11")
+quantity = 1
+slot = 5
+
+[sub_resource type="Resource" id="E2"]
+script = ExtResource("2")
+item = ExtResource("12")
+quantity = 1
+slot = 6
+
+[sub_resource type="Resource" id="E3"]
+script = ExtResource("2")
+item = ExtResource("13")
+quantity = 1
+slot = 0
+
+[sub_resource type="Resource" id="E4"]
+script = ExtResource("2")
+item = ExtResource("14")
+quantity = 1
+slot = 1
+
+[sub_resource type="Resource" id="E5"]
+script = ExtResource("2")
+item = ExtResource("15")
+quantity = 1
+slot = 2
+
+[sub_resource type="Resource" id="E6"]
+script = ExtResource("2")
+item = ExtResource("16")
+quantity = 60
+slot = -1
+
+[sub_resource type="Resource" id="E7"]
+script = ExtResource("2")
+item = ExtResource("17")
+quantity = 60
+slot = -1
+
+[sub_resource type="Resource" id="E8"]
+script = ExtResource("2")
+item = ExtResource("18")
+quantity = 60
+slot = -1
+
+[sub_resource type="Resource" id="E9"]
+script = ExtResource("2")
+item = ExtResource("19")
+quantity = 50
+slot = -1
+
+[sub_resource type="Resource" id="E10"]
+script = ExtResource("2")
+item = ExtResource("20")
+quantity = 4
+slot = -1
+
+[sub_resource type="Resource" id="E11"]
+script = ExtResource("2")
+item = ExtResource("21")
+quantity = 2
+slot = -1
+
+[sub_resource type="Resource" id="E12"]
+script = ExtResource("2")
+item = ExtResource("22")
+quantity = 1
+slot = -1
+
+[sub_resource type="Resource" id="E13"]
+script = ExtResource("2")
+item = ExtResource("23")
+quantity = 4
+slot = -1
+
+[resource]
+script = ExtResource("1")
+entries = Array[ExtResource("2")]([SubResource("E0"), SubResource("E1"), SubResource("E2"), SubResource("E3"), SubResource("E4"), SubResource("E5"), SubResource("E6"), SubResource("E7"), SubResource("E8"), SubResource("E9"), SubResource("E10"), SubResource("E11"), SubResource("E12"), SubResource("E13")])

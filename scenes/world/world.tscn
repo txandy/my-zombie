@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://src/world/world_root.gd" id="1_root"]
 [ext_resource type="Resource" path="res://data/world/m1_world_gen_settings.tres" id="2_settings"]
 [ext_resource type="Script" path="res://src/world/world_builder.gd" id="3_builder"]
 [ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="4_player"]
 [ext_resource type="Script" path="res://src/ui/debug_overlay.gd" id="5_overlay"]
+[ext_resource type="Resource" path="res://data/inventory/kits/survivor_kit.tres" id="6_kit"]
 
 [sub_resource type="ProceduralSkyMaterial" id="Sky_material"]
 
@@ -35,6 +36,7 @@ directional_shadow_max_distance = 200.0
 script = ExtResource("3_builder")
 
 [node name="Player" parent="." instance=ExtResource("4_player")]
+starting_kit = ExtResource("6_kit")
 
 [node name="DebugOverlay" type="Label" parent="."]
 offset_left = 12.0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=25 format=3]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/player/default_movement_profile.tres" id="2_profile"]
@@ -13,12 +13,10 @@
 [ext_resource type="Resource" path="res://data/combat/combat_rules.tres" id="11_rules"]
 [ext_resource type="PackedScene" path="res://scenes/combat/humanoid_hitboxes.tscn" id="12_hitboxes"]
 [ext_resource type="Script" path="res://src/combat/weapons/weapon_holder.gd" id="13_holder"]
-[ext_resource type="Resource" path="res://data/combat/weapons/assault_rifle.tres" id="14_rifle"]
-[ext_resource type="Resource" path="res://data/combat/weapons/pistol.tres" id="15_pistol"]
-[ext_resource type="Resource" path="res://data/combat/weapons/knife.tres" id="16_knife"]
 [ext_resource type="Script" path="res://src/player/viewmodel.gd" id="17_viewmodel"]
 [ext_resource type="Script" path="res://src/ui/combat_hud.gd" id="18_hud"]
-[ext_resource type="Script" path="res://src/combat/weapons/weapon_definition.gd" id="19_weapon_def"]
+[ext_resource type="Script" path="res://src/inventory/inventory_component.gd" id="20_inventory"]
+[ext_resource type="Resource" path="res://data/inventory/human_inventory_profile.tres" id="21_inv_profile"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 resource_local_to_scene = true
@@ -78,9 +76,12 @@ armor = NodePath("../Armor")
 hitboxes_root = NodePath("../Hitboxes")
 rules = ExtResource("11_rules")
 
+[node name="Inventory" type="Node" parent="."]
+script = ExtResource("20_inventory")
+profile = ExtResource("21_inv_profile")
+
 [node name="WeaponHolder" type="Node" parent="." node_paths=PackedStringArray("health", "damage_receiver", "body")]
 script = ExtResource("13_holder")
-loadout = Array[ExtResource("19_weapon_def")]([ExtResource("14_rifle"), ExtResource("15_pistol"), ExtResource("16_knife")])
 health = NodePath("../Health")
 damage_receiver = NodePath("../DamageReceiver")
 body = NodePath("..")
