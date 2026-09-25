@@ -27,6 +27,8 @@ enum FireMode { SEMI, AUTO }
 @export var recoil_vertical_deg: float = 0.0
 @export var recoil_horizontal_deg: float = 0.0
 @export var recoil_recovery: float = 0.0
+## Radio (m) al que la IA oye el disparo (GDD §11.2).
+@export var shot_sound_radius_m: float = 0.0
 
 @export_group("Cuerpo a cuerpo")
 @export var melee_damage: float = 0.0

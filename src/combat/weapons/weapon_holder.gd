@@ -172,6 +172,7 @@ func _server_attack(origin: Vector3, direction: Vector3, aiming: bool) -> void:
 	for i: int in ammo.projectile_count:
 		Ballistics.fire(origin, spread_direction(direction, spread_angle(weapon, aiming), Ballistics.rng),
 				ammo, get_parent(), _exclude_rids())
+	EventBus.sound_emitted.emit(origin, weapon.shot_sound_radius_m, &"gunshot", get_parent())
 	shot_fired.emit(weapon)
 	ammo_changed.emit(rounds - 1, weapon.magazine_size)
 

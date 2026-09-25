@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3]
+[gd_scene load_steps=29 format=3]
 
 [ext_resource type="Script" path="res://src/player/player.gd" id="1_player"]
 [ext_resource type="Resource" path="res://data/player/default_movement_profile.tres" id="2_profile"]
@@ -19,6 +19,8 @@
 [ext_resource type="Resource" path="res://data/inventory/human_inventory_profile.tres" id="21_inv_profile"]
 [ext_resource type="Script" path="res://src/player/interactor.gd" id="22_interactor"]
 [ext_resource type="Script" path="res://src/ui/inventory/inventory_screen.gd" id="23_inventory_screen"]
+[ext_resource type="Script" path="res://src/ai/common/footstep_emitter.gd" id="24_footsteps"]
+[ext_resource type="Resource" path="res://data/ai/perception_rules.tres" id="25_perception_rules"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_body"]
 resource_local_to_scene = true
@@ -84,6 +86,11 @@ profile = ExtResource("21_inv_profile")
 
 [node name="Interactor" type="Node" parent="."]
 script = ExtResource("22_interactor")
+
+[node name="Footsteps" type="Node" parent="." node_paths=PackedStringArray("body")]
+script = ExtResource("24_footsteps")
+rules = ExtResource("25_perception_rules")
+body = NodePath("..")
 
 [node name="WeaponHolder" type="Node" parent="." node_paths=PackedStringArray("health", "damage_receiver", "body")]
 script = ExtResource("13_holder")

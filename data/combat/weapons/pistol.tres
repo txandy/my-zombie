@@ -20,3 +20,4 @@ hip_spread_multiplier = 4.0
 recoil_vertical_deg = 1.6
 recoil_horizontal_deg = 0.5
 recoil_recovery = 8.0
+shot_sound_radius_m = 250.0

@@ -11,3 +11,8 @@ signal session_started(world_seed: int)
 ## La sesión de juego ha terminado.
 @warning_ignore("unused_signal")
 signal session_ended()
+
+## Un sonido audible para la IA (GDD §5.2, §11.2): disparos, pasos, puertas, construcción.
+## `radius_m` es la distancia máxima a la que se oye con audición normal.
+@warning_ignore("unused_signal")
+signal sound_emitted(position: Vector3, radius_m: float, kind: StringName, source: Node)
