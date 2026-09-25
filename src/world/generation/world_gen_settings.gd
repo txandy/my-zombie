@@ -43,6 +43,13 @@ extends Resource
 ## Capas en orden de generación. Reordenarlas cambia el mundo.
 @export var vegetation_layers: Array[VegetationLayer] = []
 
+@export_group("Spawns")
+@export var npc_archetypes: Array[NpcArchetype] = []
+## Campamentos de NPCs a colocar.
+@export var npc_camp_count: int = 0
+## Distancia mínima entre un campamento y la aparición del jugador.
+@export var npc_camp_min_distance_m: float = 0.0
+
 
 ## Número de muestras por lado del heightmap.
 func resolution() -> int:

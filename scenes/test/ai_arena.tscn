@@ -1,0 +1,258 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Script" path="res://src/world/ai_arena.gd" id="1_arena"]
+[ext_resource type="PackedScene" path="res://scenes/player/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/ai/bandit.tscn" id="3_bandit"]
+[ext_resource type="Script" path="res://src/ai/human/squad.gd" id="4_squad"]
+[ext_resource type="Script" path="res://src/ai/common/cover_point.gd" id="5_cover"]
+[ext_resource type="Resource" path="res://data/inventory/kits/range_kit.tres" id="6_kit"]
+[ext_resource type="Script" path="res://src/combat/fx/impact_markers.gd" id="7_markers"]
+
+[sub_resource type="ProceduralSkyMaterial" id="Sky_material"]
+
+[sub_resource type="Sky" id="Sky"]
+sky_material = SubResource("Sky_material")
+
+[sub_resource type="Environment" id="Environment"]
+background_mode = 2
+sky = SubResource("Sky")
+ambient_light_source = 3
+tonemap_mode = 2
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+albedo_color = Color(0.4, 0.43, 0.38, 1)
+
+[sub_resource type="StandardMaterial3D" id="Mat_props"]
+albedo_color = Color(0.6, 0.55, 0.45, 1)
+
+[node name="AIArena" type="Node3D"]
+script = ExtResource("1_arena")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment")
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866, -0.354, 0.354, 0, 0.707, 0.707, -0.5, -0.612, 0.612, 0, 20, 0)
+shadow_enabled = true
+directional_shadow_max_distance = 150.0
+
+[node name="ImpactMarkers" type="Node3D" parent="."]
+script = ExtResource("7_markers")
+
+[node name="Geometry" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+use_collision = true
+size = Vector3(240, 1, 240)
+material = SubResource("Mat_floor")
+
+[node name="Low1" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0.55, 30)
+use_collision = true
+size = Vector3(3, 1.1, 0.5)
+material = SubResource("Mat_props")
+
+[node name="Low2" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0.55, 30)
+use_collision = true
+size = Vector3(3, 1.1, 0.5)
+material = SubResource("Mat_props")
+
+[node name="Low3" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.55, 10)
+use_collision = true
+size = Vector3(4, 1.1, 0.5)
+material = SubResource("Mat_props")
+
+[node name="High1" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 1.25, 12)
+use_collision = true
+size = Vector3(1.2, 2.5, 1.2)
+material = SubResource("Mat_props")
+
+[node name="High2" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 1.25, 12)
+use_collision = true
+size = Vector3(1.2, 2.5, 1.2)
+material = SubResource("Mat_props")
+
+[node name="Low4" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0.55, -8)
+use_collision = true
+size = Vector3(3, 1.1, 0.5)
+material = SubResource("Mat_props")
+
+[node name="Low5" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0.55, -8)
+use_collision = true
+size = Vector3(3, 1.1, 0.5)
+material = SubResource("Mat_props")
+
+[node name="High3" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.25, -22)
+use_collision = true
+size = Vector3(1.5, 2.5, 1.5)
+material = SubResource("Mat_props")
+
+[node name="Wall1" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1.50, -5)
+use_collision = true
+size = Vector3(0.5, 3, 10)
+material = SubResource("Mat_props")
+
+[node name="Wall2" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.50, -5)
+use_collision = true
+size = Vector3(0.5, 3, 10)
+material = SubResource("Mat_props")
+
+[node name="Low6" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0.55, -30)
+use_collision = true
+size = Vector3(3, 1.1, 0.5)
+material = SubResource("Mat_props")
+
+[node name="Low7" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0.55, -30)
+use_collision = true
+size = Vector3(3, 1.1, 0.5)
+material = SubResource("Mat_props")
+
+[node name="CoverPoints" type="Node3D" parent="."]
+
+[node name="Low1_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 29.05)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low1_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 0, 30.95)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low2_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 29.05)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low2_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 0, 30.95)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low3_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 9.05)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low3_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.95)
+script = ExtResource("5_cover")
+low = true
+
+[node name="High1_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 10.70)
+script = ExtResource("5_cover")
+low = false
+
+[node name="High1_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14, 0, 13.30)
+script = ExtResource("5_cover")
+low = false
+
+[node name="High2_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 10.70)
+script = ExtResource("5_cover")
+low = false
+
+[node name="High2_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14, 0, 13.30)
+script = ExtResource("5_cover")
+low = false
+
+[node name="Low4_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -8.95)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low4_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6, 0, -7.05)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low5_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -8.95)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low5_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6, 0, -7.05)
+script = ExtResource("5_cover")
+low = true
+
+[node name="High3_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -23.45)
+script = ExtResource("5_cover")
+low = false
+
+[node name="High3_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -20.55)
+script = ExtResource("5_cover")
+low = false
+
+[node name="Wall1_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, -10.70)
+script = ExtResource("5_cover")
+low = false
+
+[node name="Wall1_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 0, 0.70)
+script = ExtResource("5_cover")
+low = false
+
+[node name="Wall2_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, -10.70)
+script = ExtResource("5_cover")
+low = false
+
+[node name="Wall2_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 0, 0.70)
+script = ExtResource("5_cover")
+low = false
+
+[node name="Low6_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -30.95)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low6_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -10, 0, -29.05)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low7_N" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -30.95)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Low7_S" type="Marker3D" parent="CoverPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10, 0, -29.05)
+script = ExtResource("5_cover")
+low = true
+
+[node name="Squad" type="Node3D" parent="."]
+script = ExtResource("4_squad")
+
+[node name="Bandit1" parent="Squad" instance=ExtResource("3_bandit")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 0, -40)
+
+[node name="Bandit2" parent="Squad" instance=ExtResource("3_bandit")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 0, -42)
+
+[node name="Bandit3" parent="Squad" instance=ExtResource("3_bandit")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -48)
+
+[node name="Player" parent="." instance=ExtResource("2_player")]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 55)
+starting_kit = ExtResource("6_kit")

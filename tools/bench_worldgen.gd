@@ -22,5 +22,6 @@ func _init() -> void:
 	print("pois=%s" % poi_counts)
 	for l: int in data.vegetation.size():
 		print("  veg %-10s %6d" % [settings.vegetation_layers[l].id, data.vegetation[l].size() / VegetationPhase.STRIDE])
+	print("spawn=%s camps=%d" % [data.spawns.player_spawn.snapped(Vector3.ONE), data.spawns.camps.size()])
 	print("hash=%s" % data.compute_hash())
 	quit()

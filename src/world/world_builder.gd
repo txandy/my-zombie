@@ -85,7 +85,7 @@ func _build_pois(data: WorldData, settings: WorldGenSettings) -> void:
 	add_child(root)
 	for poi: PoiPlacement in data.pois:
 		var def: PoiDefinition = settings.poi_definitions[poi.definition_index]
-		var instance: Node3D = def.scene.instantiate() as Node3D
+		var instance: Node3D = (load(def.scene_path) as PackedScene).instantiate() as Node3D
 		instance.name = "%s_%d" % [def.id, root.get_child_count()]
 		instance.position = poi.position
 		instance.rotation.y = poi.rotation_steps * PI * 0.5

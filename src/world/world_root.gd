@@ -1,12 +1,18 @@
 extends Node3D
 ## Escena del mundo generado: arranca una sesión single player (host sin clientes),
-## genera el mundo desde la seed, lo construye y coloca al jugador.
+## genera el mundo desde la seed, lo construye, coloca al jugador y crea los campamentos
+## de NPCs con su malla de navegación.
 ##
 ## Seed: la de `world_seed`; si es 0, `--seed=N` en la línea de comandos
 ## (godot --path . -- --seed=123); si tampoco hay, una aleatoria.
 
+## Mitad del lado de la zona de navegación alrededor de cada campamento (m).
+const CAMP_NAV_HALF_SIZE_M: float = 90.0
+
 @export var settings: WorldGenSettings
 @export var world_seed: int = 0
+
+var data: WorldData
 
 @onready var _builder: WorldBuilder = $WorldBuilder
 @onready var _player: Player = $Player
@@ -18,15 +24,16 @@ func _ready() -> void:
 	GameState.start_session(chosen_seed)
 
 	var start: int = Time.get_ticks_msec()
-	var data: WorldData = WorldGenerator.generate(chosen_seed, settings)
+	data = WorldGenerator.generate(chosen_seed, settings)
 	var generated: int = Time.get_ticks_msec()
 	_builder.build(data, settings)
 	var built: int = Time.get_ticks_msec()
 	print("Mundo seed=%d · generación %d ms · construcción %d ms · hash %s" % [
 			chosen_seed, generated - start, built - generated, data.compute_hash().left(12)])
 
-	_player.global_position = spawn_position(data, settings)
+	_player.global_position = data.spawns.player_spawn
 	_player.spawn_point = _player.global_position
+	_spawn_npcs()
 
 
 func _resolve_seed() -> int:
@@ -38,21 +45,23 @@ func _resolve_seed() -> int:
 	return GameState.random_world_seed()
 
 
-## Provisional hasta la fase 9 (spawns): delante de la entrada del primer POI de tier 1
-## o, si no hay, en el centro del mapa.
-static func spawn_position(data: WorldData, settings: WorldGenSettings) -> Vector3:
-	for poi: PoiPlacement in data.pois:
-		var def: PoiDefinition = settings.poi_definitions[poi.definition_index]
-		if def.tier == 1:
-			var front := Vector3(0.0, 0.0, -(def.footprint_m.y * 0.5 + 4.0))
-			var spot: Vector3 = poi.position + front.rotated(Vector3.UP, poi.rotation_steps * PI * 0.5)
-			return Vector3(spot.x, _height_near(data, spot) + 1.0, spot.z)
-	var center: float = data.resolution * data.cell_size_m * 0.5
-	var mid := Vector3(center, 0.0, center)
-	return Vector3(center, maxf(_height_near(data, mid), 0.0) + 2.0, center)
+func _spawn_npcs() -> void:
+	var npcs := Node3D.new()
+	npcs.name = "NPCs"
+	add_child(npcs)
+	var manager := AIManager.new()
+	manager.name = "AIManager"
+	add_child(manager)
+	var registry := _builder.get_node(^"CoverRegistry") as CoverRegistry
+	for i: int in data.spawns.camps.size():
+		var camp: SpawnData.Camp = data.spawns.camps[i]
+		NavRegionBuilder.bake(npcs, camp.position, CAMP_NAV_HALF_SIZE_M, _builder.terrain,
+				_builder.get_node(^"POIs"), registry)
+		CampSpawner.spawn_camp(npcs, camp, i, settings.npc_archetypes[camp.archetype_index], _height_at)
+	manager.update_lods()
 
 
-static func _height_near(data: WorldData, point: Vector3) -> float:
+func _height_at(point: Vector3) -> float:
 	var x: int = clampi(roundi(point.x / data.cell_size_m), 0, data.resolution - 1)
 	var z: int = clampi(roundi(point.z / data.cell_size_m), 0, data.resolution - 1)
 	return data.height_at(x, z)

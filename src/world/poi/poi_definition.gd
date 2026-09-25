@@ -7,7 +7,8 @@ extends Resource
 
 @export var id: StringName = &""
 @export var display_name: String = ""
-@export var scene: PackedScene
+## Ruta de la escena (no PackedScene: la generación, que es solo datos, no carga escenas).
+@export_file("*.tscn") var scene_path: String = ""
 ## 1: casas, gasolineras · 2: supermercados, granjas · 3: comisarías · 4: militares.
 @export_range(1, 4) var tier: int = 1
 

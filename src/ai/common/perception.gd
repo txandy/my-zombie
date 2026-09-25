@@ -33,6 +33,8 @@ var memory := Memory.new()
 var suppression: float = 0.0
 ## Medidor de detección por objetivo (0-1; 1 = detectado).
 var detection: Dictionary[Node3D, float] = {}
+## Multiplicador del intervalo de visión (LOD de IA: más espaciado lejos de los jugadores).
+var interval_multiplier: float = 1.0
 
 var _visible_now: Dictionary[Node3D, bool] = {}
 var _vision_timer: float = 0.0
@@ -52,8 +54,9 @@ func _physics_process(delta: float) -> void:
 		memory.confidence = maxf(memory.confidence - delta / profile.memory_duration_s, 0.0)
 	_vision_timer -= delta
 	if _vision_timer <= 0.0:
-		_vision_timer = rules.vision_interval_s
-		update_vision(rules.vision_interval_s)
+		var interval: float = rules.vision_interval_s * interval_multiplier
+		_vision_timer = interval
+		update_vision(interval)
 
 
 ## Comprueba la visión de todos los objetivos. Público para los tests.

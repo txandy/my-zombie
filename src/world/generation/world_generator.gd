@@ -12,6 +12,7 @@ static func create_phases() -> Array[WorldGenPhase]:
 		BiomePhase.new(),
 		PoiPhase.new(),
 		VegetationPhase.new(),
+		SpawnPhase.new(),
 	]
 
 

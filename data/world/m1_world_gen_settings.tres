@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="WorldGenSettings" load_steps=14 format=3]
+[gd_resource type="Resource" script_class="WorldGenSettings" load_steps=16 format=3]
 
 [ext_resource type="Script" path="res://src/world/generation/world_gen_settings.gd" id="1"]
 [ext_resource type="Resource" path="res://data/biomes/temperate_forest.tres" id="2"]
@@ -13,6 +13,8 @@
 [ext_resource type="Resource" path="res://data/vegetation/broadleaf.tres" id="11"]
 [ext_resource type="Resource" path="res://data/vegetation/bush.tres" id="12"]
 [ext_resource type="Resource" path="res://data/vegetation/rock.tres" id="13"]
+[ext_resource type="Script" path="res://src/ai/common/npc_archetype.gd" id="14"]
+[ext_resource type="Resource" path="res://data/ai/bandit_archetype.tres" id="15"]
 
 [resource]
 script = ExtResource("1")
@@ -36,3 +38,6 @@ poi_definitions = Array[ExtResource("5")]([ExtResource("6"), ExtResource("7"), E
 poi_attempts_per_instance = 30
 poi_min_height = 2.0
 vegetation_layers = Array[ExtResource("9")]([ExtResource("10"), ExtResource("11"), ExtResource("12"), ExtResource("13")])
+npc_archetypes = Array[ExtResource("14")]([ExtResource("15")])
+npc_camp_count = 2
+npc_camp_min_distance_m = 200.0

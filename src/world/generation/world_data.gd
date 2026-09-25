@@ -21,6 +21,8 @@ var biomes := PackedByteArray()
 var pois: Array[PoiPlacement] = []
 ## Fase 8: una lista de instancias por capa de vegetación (VegetationPhase.STRIDE floats cada una).
 var vegetation: Array[PackedFloat32Array] = []
+## Fase 9: aparición del jugador y campamentos de NPCs.
+var spawns: SpawnData
 
 ## Tiempo de cada fase en ms. No forma parte del hash.
 var timings: Dictionary[StringName, int] = {}
@@ -55,6 +57,8 @@ func compute_hash() -> String:
 	_update_count(ctx, vegetation.size())
 	for layer: PackedFloat32Array in vegetation:
 		_update_with_length(ctx, layer.to_byte_array())
+	if spawns != null:
+		_update_with_length(ctx, spawns.to_bytes())
 	return ctx.finish().hex_encode()
 
 
