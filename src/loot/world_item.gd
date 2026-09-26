@@ -54,4 +54,5 @@ func interaction_text() -> String:
 ## Host: intenta guardar el objeto en el inventario del jugador.
 func interact(player: Player) -> void:
 	if player.inventory.give(item) == 0:
+		EventBus.sound_emitted.emit(global_position, 5.0, &"pickup", player)
 		queue_free()

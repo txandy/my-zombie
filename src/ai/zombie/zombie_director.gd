@@ -113,6 +113,7 @@ func _on_night_changed(is_night: bool) -> void:
 func start_horde() -> void:
 	horde_waves_left = waves_per_horde
 	_wave_timer = 0.0
+	EventBus.horde_started.emit()
 
 
 ## Tamaño de oleada: base + crecimiento por horda (día) y escala por jugadores (GDD §4.5).

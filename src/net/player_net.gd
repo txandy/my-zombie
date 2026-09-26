@@ -38,6 +38,11 @@ func setup(player: Player) -> void:
 		player.weapons.weapon_changed.connect(func(_w: WeaponDefinition) -> void: _mark_dirty())
 		player.weapons.ammo_changed.connect(func(_r: int, _m: int) -> void: _mark_dirty())
 		player.weapons.shot_fired.connect(func(_w: WeaponDefinition) -> void: _client_shot.rpc_id(player.peer_id))
+		player.weapons.reload_started.connect(func(_d: float) -> void: _client_feedback.rpc_id(player.peer_id, &"reload"))
+		player.weapons.dry_fired.connect(func() -> void: _client_feedback.rpc_id(player.peer_id, &"dry_fire"))
+		player.health.zone_damaged.connect(func(_z: BodyZones.Zone, amount: float) -> void:
+			if amount > 0.5:
+				_client_feedback.rpc_id(player.peer_id, &"hurt"))
 		player.inventory.request_rejected.connect(func(reason: String) -> void: _client_rejected.rpc_id(player.peer_id, reason))
 
 
@@ -116,6 +121,12 @@ func _client_state(state: Dictionary) -> void:
 @rpc("authority", "call_remote", "reliable")
 func _client_shot() -> void:
 	_player.play_shot_feedback()
+
+
+## Sonido de feedback para el dueño (recarga, cambio de arma, daño, clic en vacío).
+@rpc("authority", "call_remote", "reliable")
+func _client_feedback(sound: StringName) -> void:
+	AudioManager.play_ui(sound)
 
 
 @rpc("authority", "call_remote", "reliable")

@@ -1,0 +1,260 @@
+[gd_resource type="Resource" script_class="SoundLibrary" format=3]
+
+[ext_resource type="Script" path="res://src/core/audio/sound_library.gd" id="1_ns34t"]
+[ext_resource type="Script" path="res://src/core/audio/sound_definition.gd" id="2_5dpyn"]
+[ext_resource type="AudioStream" path="res://assets/audio/gunshot_rifle.wav" id="3_g50mc"]
+[ext_resource type="AudioStream" path="res://assets/audio/gunshot_pistol.wav" id="4_ojb1k"]
+[ext_resource type="AudioStream" path="res://assets/audio/footstep_1.wav" id="5_6duh0"]
+[ext_resource type="AudioStream" path="res://assets/audio/footstep_2.wav" id="6_4g3ot"]
+[ext_resource type="AudioStream" path="res://assets/audio/footstep_3.wav" id="7_d1la1"]
+[ext_resource type="AudioStream" path="res://assets/audio/impact_world.wav" id="8_psh2f"]
+[ext_resource type="AudioStream" path="res://assets/audio/impact_flesh.wav" id="9_wxwh3"]
+[ext_resource type="AudioStream" path="res://assets/audio/hitmarker.wav" id="10_07o5k"]
+[ext_resource type="AudioStream" path="res://assets/audio/reload.wav" id="11_x3ss2"]
+[ext_resource type="AudioStream" path="res://assets/audio/weapon_switch.wav" id="12_tbvhc"]
+[ext_resource type="AudioStream" path="res://assets/audio/dry_fire.wav" id="13_hspwh"]
+[ext_resource type="AudioStream" path="res://assets/audio/knife_swing.wav" id="14_yw4v4"]
+[ext_resource type="AudioStream" path="res://assets/audio/hurt.wav" id="15_4hliy"]
+[ext_resource type="AudioStream" path="res://assets/audio/heartbeat.wav" id="16_e73rj"]
+[ext_resource type="AudioStream" path="res://assets/audio/zombie_groan_1.wav" id="17_4542q"]
+[ext_resource type="AudioStream" path="res://assets/audio/zombie_groan_2.wav" id="18_5yhs3"]
+[ext_resource type="AudioStream" path="res://assets/audio/zombie_groan_3.wav" id="19_ptq6r"]
+[ext_resource type="AudioStream" path="res://assets/audio/zombie_attack.wav" id="20_qignn"]
+[ext_resource type="AudioStream" path="res://assets/audio/zombie_death.wav" id="21_10der"]
+[ext_resource type="AudioStream" path="res://assets/audio/npc_death.wav" id="22_oac5a"]
+[ext_resource type="AudioStream" path="res://assets/audio/door.wav" id="23_rvk0x"]
+[ext_resource type="AudioStream" path="res://assets/audio/construction.wav" id="24_7mfua"]
+[ext_resource type="AudioStream" path="res://assets/audio/gather_wood.wav" id="25_exy4g"]
+[ext_resource type="AudioStream" path="res://assets/audio/gather_stone.wav" id="26_pj0l1"]
+[ext_resource type="AudioStream" path="res://assets/audio/pickup.wav" id="27_xs1fy"]
+[ext_resource type="AudioStream" path="res://assets/audio/ui_click.wav" id="28_g07ch"]
+[ext_resource type="AudioStream" path="res://assets/audio/night_stinger.wav" id="29_n4k2t"]
+[ext_resource type="AudioStream" path="res://assets/audio/horde_horn.wav" id="30_bkpfs"]
+
+[sub_resource type="Resource" id="Resource_1q8c4"]
+script = ExtResource("2_5dpyn")
+id = &"gunshot_rifle"
+streams = Array[AudioStream]([ExtResource("3_g50mc")])
+pitch_variation = 0.05
+max_distance_m = 400.0
+unit_size = 40.0
+
+[sub_resource type="Resource" id="Resource_e6we8"]
+script = ExtResource("2_5dpyn")
+id = &"gunshot_pistol"
+streams = Array[AudioStream]([ExtResource("4_ojb1k")])
+volume_db = -2.0
+pitch_variation = 0.05
+max_distance_m = 300.0
+unit_size = 30.0
+
+[sub_resource type="Resource" id="Resource_x5jpy"]
+script = ExtResource("2_5dpyn")
+id = &"footstep"
+streams = Array[AudioStream]([ExtResource("5_6duh0"), ExtResource("6_4g3ot"), ExtResource("7_d1la1")])
+volume_db = -14.0
+pitch_variation = 0.15
+max_distance_m = 30.0
+unit_size = 2.0
+min_interval_s = 0.08
+
+[sub_resource type="Resource" id="Resource_ioafb"]
+script = ExtResource("2_5dpyn")
+id = &"impact_world"
+streams = Array[AudioStream]([ExtResource("8_psh2f")])
+volume_db = -8.0
+pitch_variation = 0.2
+max_distance_m = 50.0
+unit_size = 3.0
+
+[sub_resource type="Resource" id="Resource_t07dx"]
+script = ExtResource("2_5dpyn")
+id = &"impact_flesh"
+streams = Array[AudioStream]([ExtResource("9_wxwh3")])
+volume_db = -4.0
+pitch_variation = 0.15
+max_distance_m = 50.0
+unit_size = 3.0
+
+[sub_resource type="Resource" id="Resource_dt654"]
+script = ExtResource("2_5dpyn")
+id = &"hitmarker"
+streams = Array[AudioStream]([ExtResource("10_07o5k")])
+volume_db = -10.0
+pitch_variation = 0.05
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+min_interval_s = 0.03
+
+[sub_resource type="Resource" id="Resource_p1hdv"]
+script = ExtResource("2_5dpyn")
+id = &"reload"
+streams = Array[AudioStream]([ExtResource("11_x3ss2")])
+volume_db = -6.0
+pitch_variation = 0.03
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+
+[sub_resource type="Resource" id="Resource_523ej"]
+script = ExtResource("2_5dpyn")
+id = &"weapon_switch"
+streams = Array[AudioStream]([ExtResource("12_tbvhc")])
+volume_db = -8.0
+pitch_variation = 0.05
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+
+[sub_resource type="Resource" id="Resource_cgdjg"]
+script = ExtResource("2_5dpyn")
+id = &"dry_fire"
+streams = Array[AudioStream]([ExtResource("13_hspwh")])
+volume_db = -8.0
+pitch_variation = 0.05
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+min_interval_s = 0.1
+
+[sub_resource type="Resource" id="Resource_ib27y"]
+script = ExtResource("2_5dpyn")
+id = &"knife_swing"
+streams = Array[AudioStream]([ExtResource("14_yw4v4")])
+volume_db = -6.0
+pitch_variation = 0.15
+max_distance_m = 15.0
+unit_size = 2.0
+
+[sub_resource type="Resource" id="Resource_s3jf7"]
+script = ExtResource("2_5dpyn")
+id = &"hurt"
+streams = Array[AudioStream]([ExtResource("15_4hliy")])
+volume_db = -3.0
+pitch_variation = 0.1
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+min_interval_s = 0.25
+
+[sub_resource type="Resource" id="Resource_lesg3"]
+script = ExtResource("2_5dpyn")
+id = &"heartbeat"
+streams = Array[AudioStream]([ExtResource("16_e73rj")])
+volume_db = -6.0
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+
+[sub_resource type="Resource" id="Resource_qaing"]
+script = ExtResource("2_5dpyn")
+id = &"zombie_groan"
+streams = Array[AudioStream]([ExtResource("17_4542q"), ExtResource("18_5yhs3"), ExtResource("19_ptq6r")])
+volume_db = -6.0
+pitch_variation = 0.15
+max_distance_m = 40.0
+unit_size = 4.0
+
+[sub_resource type="Resource" id="Resource_eyboe"]
+script = ExtResource("2_5dpyn")
+id = &"zombie_attack"
+streams = Array[AudioStream]([ExtResource("20_qignn")])
+volume_db = -3.0
+pitch_variation = 0.1
+max_distance_m = 30.0
+unit_size = 4.0
+
+[sub_resource type="Resource" id="Resource_w6n4s"]
+script = ExtResource("2_5dpyn")
+id = &"zombie_death"
+streams = Array[AudioStream]([ExtResource("21_10der")])
+volume_db = -4.0
+pitch_variation = 0.1
+max_distance_m = 40.0
+unit_size = 4.0
+
+[sub_resource type="Resource" id="Resource_6glt4"]
+script = ExtResource("2_5dpyn")
+id = &"npc_death"
+streams = Array[AudioStream]([ExtResource("22_oac5a")])
+volume_db = -4.0
+pitch_variation = 0.1
+max_distance_m = 50.0
+unit_size = 4.0
+
+[sub_resource type="Resource" id="Resource_veq2g"]
+script = ExtResource("2_5dpyn")
+id = &"door"
+streams = Array[AudioStream]([ExtResource("23_rvk0x")])
+volume_db = -6.0
+pitch_variation = 0.08
+max_distance_m = 25.0
+unit_size = 3.0
+
+[sub_resource type="Resource" id="Resource_fl0he"]
+script = ExtResource("2_5dpyn")
+id = &"construction"
+streams = Array[AudioStream]([ExtResource("24_7mfua")])
+volume_db = -4.0
+pitch_variation = 0.1
+max_distance_m = 50.0
+
+[sub_resource type="Resource" id="Resource_b52od"]
+script = ExtResource("2_5dpyn")
+id = &"gather_wood"
+streams = Array[AudioStream]([ExtResource("25_exy4g")])
+volume_db = -4.0
+pitch_variation = 0.1
+max_distance_m = 40.0
+unit_size = 4.0
+
+[sub_resource type="Resource" id="Resource_tbk2l"]
+script = ExtResource("2_5dpyn")
+id = &"gather_stone"
+streams = Array[AudioStream]([ExtResource("26_pj0l1")])
+volume_db = -4.0
+pitch_variation = 0.1
+max_distance_m = 40.0
+unit_size = 4.0
+
+[sub_resource type="Resource" id="Resource_l6m7m"]
+script = ExtResource("2_5dpyn")
+id = &"pickup"
+streams = Array[AudioStream]([ExtResource("27_xs1fy")])
+volume_db = -6.0
+pitch_variation = 0.1
+max_distance_m = 12.0
+unit_size = 1.5
+
+[sub_resource type="Resource" id="Resource_evndy"]
+script = ExtResource("2_5dpyn")
+id = &"ui_click"
+streams = Array[AudioStream]([ExtResource("28_g07ch")])
+volume_db = -12.0
+pitch_variation = 0.05
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+
+[sub_resource type="Resource" id="Resource_1vrou"]
+script = ExtResource("2_5dpyn")
+id = &"night_stinger"
+streams = Array[AudioStream]([ExtResource("29_n4k2t")])
+volume_db = -6.0
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+
+[sub_resource type="Resource" id="Resource_84bm2"]
+script = ExtResource("2_5dpyn")
+id = &"horde_horn"
+streams = Array[AudioStream]([ExtResource("30_bkpfs")])
+volume_db = -2.0
+positional = false
+max_distance_m = 0.0
+unit_size = 1.0
+
+[resource]
+script = ExtResource("1_ns34t")
+sounds = Array[ExtResource("2_5dpyn")]([SubResource("Resource_1q8c4"), SubResource("Resource_e6we8"), SubResource("Resource_x5jpy"), SubResource("Resource_ioafb"), SubResource("Resource_t07dx"), SubResource("Resource_dt654"), SubResource("Resource_p1hdv"), SubResource("Resource_523ej"), SubResource("Resource_cgdjg"), SubResource("Resource_ib27y"), SubResource("Resource_s3jf7"), SubResource("Resource_lesg3"), SubResource("Resource_qaing"), SubResource("Resource_eyboe"), SubResource("Resource_w6n4s"), SubResource("Resource_6glt4"), SubResource("Resource_veq2g"), SubResource("Resource_fl0he"), SubResource("Resource_b52od"), SubResource("Resource_tbk2l"), SubResource("Resource_l6m7m"), SubResource("Resource_evndy"), SubResource("Resource_1vrou"), SubResource("Resource_84bm2")])

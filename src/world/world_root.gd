@@ -74,6 +74,10 @@ func _start_host() -> void:
 	_autosave_left = autosave_interval_s
 	multiplayer.peer_disconnected.connect(_on_peer_left)
 	Ballistics.projectile_impacted.connect(_on_impact)
+	EventBus.sound_emitted.connect(_relay_sound)
+	EventBus.horde_started.connect(func() -> void:
+		for peer: int in NetManager.ready_clients():
+			_client_horde.rpc_id(peer))
 	world_ready.emit()
 
 
@@ -333,3 +337,20 @@ func _climate_at(point: Vector3) -> float:
 	var x: int = clampi(roundi(point.x / data.cell_size_m), 0, data.resolution - 1)
 	var z: int = clampi(roundi(point.z / data.cell_size_m), 0, data.resolution - 1)
 	return data.temperature[data.index(x, z)]
+
+
+# --- Sonido en coop: los eventos de sonido ocurren en el host y se reenvían ---
+
+func _relay_sound(position: Vector3, _radius_m: float, kind: StringName, _source: Node) -> void:
+	for peer: int in NetManager.ready_clients():
+		_client_sound.rpc_id(peer, position, kind)
+
+
+@rpc("authority", "call_remote", "unreliable")
+func _client_sound(position: Vector3, kind: StringName) -> void:
+	AudioManager.play_at(AudioManager.sound_for_event(kind), position)
+
+
+@rpc("authority", "call_remote", "reliable")
+func _client_horde() -> void:
+	EventBus.horde_started.emit()

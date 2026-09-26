@@ -24,3 +24,7 @@ signal day_started(day: int)
 ## Cambio entre día y noche (GDD §4.5).
 @warning_ignore("unused_signal")
 signal night_changed(is_night: bool)
+
+## Empieza una horda (GDD §4.5).
+@warning_ignore("unused_signal")
+signal horde_started()

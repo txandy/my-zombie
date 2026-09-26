@@ -35,6 +35,7 @@ func _ready() -> void:
 func _on_impact(_position: Vector3, _normal: Vector3, hitbox: Hitbox, source: Node) -> void:
 	if hitbox != null and source == weapons.get_parent() and hitbox.receiver != receiver:
 		_hitmarker_timer = 0.15
+		AudioManager.play_ui(&"hitmarker")
 
 
 func _process(delta: float) -> void:
@@ -47,6 +48,10 @@ func _process(delta: float) -> void:
 	_health_label.visible = _health_timer > 0.0 or health.is_dead
 	_health_label.text = _health_text()
 	_status_label.text = _status_text()
+	# Latido con la salud crítica (cabeza o tórax por debajo del 30 %).
+	var critical: bool = not health.is_dead and (health.hp(BodyZones.Zone.THORAX) < health.profile.thorax_hp * 0.3
+			or health.hp(BodyZones.Zone.HEAD) < health.profile.head_hp * 0.3)
+	AudioManager.set_heartbeat(critical)
 	_stamina_bar.value = survival.stamina / survival.profile.max_stamina * 100.0
 	_stamina_bar.visible = survival.stamina < survival.profile.max_stamina - 0.5
 	if is_instance_valid(interactor.focused):
@@ -107,3 +112,7 @@ func _status_text() -> String:
 	elif survival.body_temp_c >= survival.profile.hyperthermia_c:
 		parts.append("CALOR %.1f °C" % survival.body_temp_c)
 	return "  ·  ".join(parts)
+
+
+func _exit_tree() -> void:
+	AudioManager.set_heartbeat(false)

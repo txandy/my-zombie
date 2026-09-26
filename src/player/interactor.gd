@@ -111,4 +111,4 @@ func _server_gather(point: Vector3) -> void:
 	var leftover: int = _player.inventory.give(ItemInstance.new(def, int(taken.taken)))
 	if leftover > 0:
 		_player.inventory.request_rejected.emit("no te cabe más %s" % def.display_name.to_lower())
-	EventBus.sound_emitted.emit(point, 20.0, &"gather", _player)
+	EventBus.sound_emitted.emit(point, 20.0, StringName("gather_" + item_id), _player)

@@ -295,6 +295,7 @@ func _sync_equipment() -> void:
 
 func _on_died(_zone: BodyZones.Zone) -> void:
 	is_dead = true
+	EventBus.sound_emitted.emit(global_position, 40.0, &"npc_death", self)
 	stop()
 	brain.stop()
 	_become_corpse()

@@ -133,6 +133,7 @@ func _delete(save_name: String) -> void:
 func _button(text: String, action: Callable) -> Button:
 	var button := Button.new()
 	button.text = text
+	button.pressed.connect(func() -> void: AudioManager.play_ui(&"ui_click"))
 	button.pressed.connect(action)
 	return button
 

@@ -20,6 +20,8 @@ signal ammo_changed(rounds: int, magazine_size: int)
 signal reload_started(duration_s: float)
 ## Host: no hay munición compatible para recargar.
 signal reload_failed()
+## Host: se ha intentado disparar sin balas (clic en vacío).
+signal dry_fired()
 
 ## Armas fijas para personajes sin inventario (dummies). Se cargan llenas.
 @export var loadout: Array[WeaponDefinition] = []
@@ -170,6 +172,7 @@ func _server_attack(origin: Vector3, direction: Vector3, aiming: bool) -> void:
 	var item: ItemInstance = current_item()
 	var rounds: int = current_rounds()
 	if rounds <= 0:
+		dry_fired.emit()
 		return
 	item.state["rounds"] = rounds - 1
 	_cooldown_s = weapon.fire_interval_s()
@@ -177,7 +180,7 @@ func _server_attack(origin: Vector3, direction: Vector3, aiming: bool) -> void:
 	for i: int in ammo.projectile_count:
 		Ballistics.fire(origin, spread_direction(direction, spread_angle(weapon, aiming), Ballistics.rng),
 				ammo, get_parent(), _exclude_rids())
-	EventBus.sound_emitted.emit(origin, weapon.shot_sound_radius_m, &"gunshot", get_parent())
+	EventBus.sound_emitted.emit(origin, weapon.shot_sound_radius_m, weapon.shot_sound, get_parent())
 	shot_fired.emit(weapon)
 	ammo_changed.emit(rounds - 1, weapon.magazine_size)
 
@@ -261,6 +264,7 @@ func _finish_reload() -> void:
 
 func _melee(weapon: WeaponDefinition, origin: Vector3, direction: Vector3) -> void:
 	_cooldown_s = weapon.melee_interval_s
+	EventBus.sound_emitted.emit(origin, 4.0, &"knife_swing", get_parent())
 	var space: PhysicsDirectSpaceState3D = get_viewport().get_world_3d().direct_space_state
 	var query := PhysicsRayQueryParameters3D.create(origin, origin + direction.normalized() * weapon.melee_range_m,
 			PhysicsLayers.PROJECTILE_MASK, _exclude_rids())

@@ -30,6 +30,7 @@ var _perception_timer: float = 0.0
 var _attack_timer: float = 0.0
 var _unseen_s: float = 0.0
 var _wander_timer: float = 0.0
+var _groan_timer: float = 0.0
 var _gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
 @onready var health: HealthComponent = $Health
@@ -59,6 +60,7 @@ func _physics_process(delta: float) -> void:
 		_perception_timer = profile.perception_interval_s
 		_perceive(profile.perception_interval_s)
 	_attack_timer = maxf(_attack_timer - delta, 0.0)
+	_groan(delta)
 	match state:
 		State.WANDER:
 			_wander(delta)
@@ -226,6 +228,7 @@ func _on_died(_zone: BodyZones.Zone) -> void:
 	state = State.DEAD
 	velocity = Vector3.ZERO
 	died.emit()
+	EventBus.sound_emitted.emit(global_position, 25.0, &"zombie_death", self)
 	await get_tree().create_timer(corpse_time_s).timeout
 	queue_free()
 
@@ -238,3 +241,13 @@ func _show_corpse() -> void:
 	collision_layer = 0
 	_visual.rotation.x = -PI * 0.5
 	_visual.position.y = 0.2
+
+
+# Gruñidos periódicos (más a menudo persiguiendo). También los oye la IA.
+func _groan(delta: float) -> void:
+	_groan_timer -= delta
+	if _groan_timer > 0.0:
+		return
+	var chasing: bool = state == State.CHASE or state == State.ATTACK
+	_groan_timer = Ballistics.rng.randf_range(2.5, 5.0) if chasing else Ballistics.rng.randf_range(6.0, 14.0)
+	EventBus.sound_emitted.emit(global_position, 20.0, &"zombie_groan", self)

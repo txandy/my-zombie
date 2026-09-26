@@ -22,6 +22,7 @@ NetManager="*res://src/core/net_manager.gd"
 GameState="*res://src/core/game_state.gd"
 SaveSystem="*res://src/core/save_system.gd"
 Ballistics="*res://src/combat/ballistics.gd"
+AudioManager="*res://src/core/audio/audio_manager.gd"
 
 [debug]
 

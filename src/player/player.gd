@@ -55,6 +55,8 @@ func _ready() -> void:
 	_sync_equipment()
 	_viewmodel.show_weapon(weapons.current())
 	net.setup(self)
+	if is_local():
+		_connect_local_feedback()
 
 
 func _physics_process(delta: float) -> void:
@@ -207,3 +209,13 @@ func _become_remote() -> void:
 		node.process_mode = Node.PROCESS_MODE_DISABLED
 	($HUD as CanvasLayer).visible = false
 	interactor.set_physics_process(false)
+
+
+# Sonidos de feedback del jugador local (en un cliente llegan del host vía PlayerNet).
+func _connect_local_feedback() -> void:
+	weapons.reload_started.connect(func(_d: float) -> void: AudioManager.play_ui(&"reload"))
+	weapons.weapon_changed.connect(func(_w: WeaponDefinition) -> void: AudioManager.play_ui(&"weapon_switch"))
+	weapons.dry_fired.connect(func() -> void: AudioManager.play_ui(&"dry_fire"))
+	health.zone_damaged.connect(func(_z: BodyZones.Zone, amount: float) -> void:
+		if amount > 0.5:
+			AudioManager.play_ui(&"hurt"))
